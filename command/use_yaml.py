@@ -7,6 +7,7 @@ yaml = YAML()
 
 default_config = {
     "default_page": 0,
+    "set_lang_setting": 0,
     "set_windows": True,
     "daily_task": False,
     "get_reward": False,

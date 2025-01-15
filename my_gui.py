@@ -86,7 +86,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                 "3840*2160": 5}
         self.set_win_size.addItems(set_win_size_options)
         
-        set_lang_setting_options = {"English": "en_US", "简体中文": "cn_zh"}
+        set_lang_setting_options = {"English": 0, "简体中文": 1}
         self.set_lang_setting.addItems(set_lang_setting_options)
 
         # 设置各个下拉框选择时，改变config.yaml中的参数
