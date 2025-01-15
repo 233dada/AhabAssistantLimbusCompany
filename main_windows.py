@@ -180,7 +180,7 @@ class Ui_MainWindow(object):
         self.set_lang_setting = ComboBox(self.win_setting)
         self.set_lang_setting.setGeometry(QtCore.QRect(20, 290, 251, 32))
         self.set_lang_setting.setObjectName("set_lang_setting")
-        
+
         self.detail_setting.addWidget(self.win_setting)
 
 
@@ -475,6 +475,7 @@ class Ui_MainWindow(object):
         self.start_with_key_page.setText(_translate("MainWindow", "一键长草"))
         self.about_page.setText(_translate("MainWindow", "关于"))
         self.instructions_page.setText(_translate("MainWindow", "使用说明"))
+        self.lang_setting.setText(_translate("MainWindow", "语言设置"))
 
 
 from qfluentwidgets import BodyLabel, CardWidget, CheckBox, ComboBox, PushButton, ScrollArea, SpinBox, SubtitleLabel, \

@@ -86,8 +86,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                 "3840*2160": 5}
         self.set_win_size.addItems(set_win_size_options)
         
-        set_language_options = {"English": "en", "简体中文": "cn-zh"}
-        self.set_lang_setting.addItems(set_language_options)
+        set_lang_setting_options = {"English": "en_US", "简体中文": "cn_zh"}
+        self.set_lang_setting.addItems(set_lang_setting_options)
 
         # 设置各个下拉框选择时，改变config.yaml中的参数
         self.set_reduce_miscontact.currentIndexChanged.connect(
@@ -103,7 +103,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.all_teams.currentIndexChanged.connect(lambda: self.on_combobox_changed(set_select_team_options))
 
         self.set_lang_setting.currentIndexChanged.connect(
-            lambda: self.on_combobox_changed(set_language_options)
+            lambda: self.on_combobox_changed(set_lang_setting_options)
         )
 
         # 设置当复选框选中时，修改配队顺序
@@ -331,6 +331,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.set_get_prize.setEnabled(False)
         self.select_all.setEnabled(False)
         self.select_none.setEnabled(False)
+        self.set_lang_setting(False)
 
     def setting_available(self):
         # 使所有设置项可用
@@ -356,6 +357,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.set_get_prize.setEnabled(True)
         self.select_all.setEnabled(True)
         self.select_none.setEnabled(True)
+        self.set_lang_setting.setEnabled(True)
 
     def refresh_team_order(self):
         config_datas = get_yaml_information()
@@ -696,6 +698,8 @@ def read_last_setting(mygui):
     mygui.set_get_prize.setCurrentIndex(config_datas["set_get_prize"])
 
     mygui.set_win_size.setCurrentIndex(config_datas["set_win_size"])
+
+    mygui.set_lang_setting.setCurrentIndex(config_datas["set_lang_setting"])
 
     # 读取之前最后复选框设置
     mygui.team1.setChecked(config_datas["team1"])

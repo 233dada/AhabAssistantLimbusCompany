@@ -2,7 +2,7 @@
 default_page: 0
 
 # 语言设置
-language: en
+set_lang_setting: en_US
 
 # 保存各个任务是否启用
 set_windows: true
