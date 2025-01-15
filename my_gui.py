@@ -16,10 +16,10 @@ from script.script_task_scheme import my_script_task
 from setting_ui import Ui_all_team_basic_setting
 from command.mouse_activity import set_pause,is_pause
 
-set_select_team_options = {"Team1": 1, "Team2": 2, "Team3": 3, "Team4": 4, "Team5": 5,
-                           "Team6": 6, "Team7": 7, "Team8": 8, "Team9": 9, "Team10": 10,
-                           "Team11": 11, "Team12": 12, "Team13": 13, "Team14": 14, "Team15": 15,
-                           "Team16": 16, "Team17": 17, "Team18": 18, "Team19": 19, "Team20": 20,
+set_select_team_options = {"队伍(team)1": 1, "队伍(team)2": 2, "队伍(team)3": 3, "队伍(team)4": 4, "队伍(team)5": 5,
+                           "队伍(team)6": 6, "队伍(team)7": 7, "队伍(team)8": 8, "队伍(team)9": 9, "队伍(team)10": 10,
+                           "队伍(team)11": 11, "队伍(team)12": 12, "队伍(team)13": 13, "队伍(team)14": 14, "队伍(team)15": 15,
+                           "队伍(team)16": 16, "队伍(team)17": 17, "队伍(team)18": 18, "队伍(team)19": 19, "队伍(team)20": 20,
                            }
 all_systems = {"烧伤(burn)": 0, "流血(bleed)": 1, "震颤(tremor)": 2, "破裂(rupture)": 3, "呼吸(poise)": 4,
                "沉沦(sinking)": 5, "充能(charge)": 6, "斩击(slash)": 7, "突刺(pierce)": 8, "打击(blunt)": 9}
@@ -74,7 +74,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # 设置各个选项卡中的下拉框内容
         set_reduce_miscontact_options = {'是': 0, '否': 1}
         self.set_reduce_miscontact.addItems(set_reduce_miscontact_options)
-
         self.all_teams.addItems(set_select_team_options)
 
         set_lunacy_to_enkephalin_options = {"不换": 0, "换第一次": 1, "换第二次": 2}
@@ -86,15 +85,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         set_win_size_options = {"1920*1080": 0, "2560*1440": 1, "1280*720": 2, "1600*900": 3, "3200*1800": 4,
                                 "3840*2160": 5}
         self.set_win_size.addItems(set_win_size_options)
+        
+        set_language_options = {"English": "en", "简体中文": "cn-zh"}
+        self.set_lang_setting.addItems(set_language_options)
 
         # 设置各个下拉框选择时，改变config.yaml中的参数
         self.set_reduce_miscontact.currentIndexChanged.connect(
             lambda: self.on_combobox_changed(set_reduce_miscontact_options))
+        
         self.set_lunacy_to_enkephalin.currentIndexChanged.connect(
             lambda: self.on_combobox_changed(set_lunacy_to_enkephalin_options))
+        
         self.set_get_prize.currentIndexChanged.connect(lambda: self.on_combobox_changed(set_get_prize_options))
+
         self.set_win_size.currentIndexChanged.connect(lambda: self.on_combobox_changed(set_win_size_options))
+
         self.all_teams.currentIndexChanged.connect(lambda: self.on_combobox_changed(set_select_team_options))
+
+        self.set_lang_setting.currentIndexChanged.connect(
+            lambda: self.on_combobox_changed(set_language_options)
+        )
 
         # 设置当复选框选中时，修改配队顺序
         self.team1.stateChanged.connect(

@@ -1,6 +1,9 @@
 # 保存最后处在的页面
 default_page: 0
 
+# 语言设置
+language: en
+
 # 保存各个任务是否启用
 set_windows: true
 daily_task: false

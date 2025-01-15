@@ -148,25 +148,41 @@ class Ui_MainWindow(object):
         # 窗口设置的页面
         self.win_setting = QtWidgets.QWidget()
         self.win_setting.setObjectName("win_setting")
+
         self.win_size = BodyLabel(self.win_setting)
         self.win_size.setGeometry(QtCore.QRect(20, 20, 191, 20))
         self.win_size.setObjectName("win_size")
+
         self.win_position = BodyLabel(self.win_setting)
         self.win_position.setGeometry(QtCore.QRect(20, 100, 191, 20))
         self.win_position.setObjectName("win_position")
+
         self.reduce_miscontact = BodyLabel(self.win_setting)
         self.reduce_miscontact.setGeometry(QtCore.QRect(20, 180, 191, 20))
         self.reduce_miscontact.setObjectName("reduce_miscontact")
+
         self.set_win_size = ComboBox(self.win_setting)
         self.set_win_size.setGeometry(QtCore.QRect(20, 50, 251, 32))
         self.set_win_size.setObjectName("set_win_size")
+
         self.set_win_position = ComboBox(self.win_setting)
         self.set_win_position.setGeometry(QtCore.QRect(20, 130, 251, 32))
         self.set_win_position.setObjectName("set_win_position")
+
         self.set_reduce_miscontact = ComboBox(self.win_setting)
         self.set_reduce_miscontact.setGeometry(QtCore.QRect(20, 210, 251, 32))
         self.set_reduce_miscontact.setObjectName("set_reduce_miscontact")
+
+        self.lang_setting = BodyLabel(self.win_setting)
+        self.lang_setting.setGeometry(QtCore.QRect(20, 260, 191, 20))
+        self.lang_setting.setObjectName("lang_setting")
+        
+        self.set_lang_setting = ComboBox(self.win_setting)
+        self.set_lang_setting.setGeometry(QtCore.QRect(20, 290, 251, 32))
+        self.set_lang_setting.setObjectName("set_lang_setting")
+        
         self.detail_setting.addWidget(self.win_setting)
+
 
         # 日常任务的页面
         self.daily_setting = QtWidgets.QWidget()
