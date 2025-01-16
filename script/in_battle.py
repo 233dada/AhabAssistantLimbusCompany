@@ -10,6 +10,7 @@ from my_decorator.decorator import begin_and_finish_time_log
 from my_log.my_log import my_log
 from my_ocr.ocr import commom_ocr, commom_gain_text, commom_all_ocr
 from script.decision_event_handling import decision_event_handling
+from command.use_yaml import get_yaml_information
 
 
 def update_wait_time(time: float = None, fail_flag: bool = False, total_count: int = 1):
@@ -172,14 +173,20 @@ def battle():
 
 
 def battle_ocr():
+    config_datas = get_yaml_information()
     dead = commom_ocr("./pic/battle/dead.png", 85, 20)
     text = commom_gain_text(dead[0])
     text_values = [d.get("text", "") for d in text]
-    if any("dead" in t.lower() for t in text_values):
-        msg = f"OCR检测到单词{"dead"}"
+    dead_langs = {
+        0: "dead",
+        1: "阵亡"
+    }
+    dead_text = dead_langs.get(config_datas.get("set_lang_setting", 0), "dead")
+    if any(dead_text in t.lower() for t in text_values):
+        msg = f"OCR检测到单词{dead_text}"
         my_log("debug", msg)
         return True
-    msg = f"OCR没有检测到单词{"dead"}"
+    msg = f"OCR没有检测到单词{dead_text}"
     my_log("debug", msg)
     return False
 

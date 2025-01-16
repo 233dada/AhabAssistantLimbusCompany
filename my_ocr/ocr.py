@@ -8,15 +8,25 @@ from command.get_grey_normalized_pic import get_grey_normalized_pic
 from command.get_pic import win_cap
 from command.get_position import get_pic_position
 from command.mouse_activity import mouse_click
-from command.use_yaml import get_black_list_keyword_yaml
+from command.use_yaml import get_black_list_keyword_yaml, get_yaml_information
 from my_error.my_error import withOutPicError
 from my_log.my_log import my_log
 from my_ocr.PPOCR_api import GetOcrApi
+from command.get_position import get_pic_model_path_by_lang
 
 
-def compare_the_blacklist(pic_byte_stream, language="models/config_en.txt"):
+def compare_the_blacklist(pic_byte_stream, language= "undefine"):
+    #如果没有选择语言则根据设置选择
+    if language == "undefine":
+        config_datas = get_yaml_information()
+        langs = {
+            0: "en",
+            1: "chinese"
+        }
+        lang = langs.get(config_datas.get("set_lang_setting", 0), "en")
     # 使用的识别语言配置文件
-    # 之前的OCR使用"models/config_en.txt"
+    language = f"models/config_{lang}.txt"
+
     my_argument = {"config_path": language}
     # 初始化识别器对象，传入 PaddleOCR-json.exe
     ocr = GetOcrApi("./3rdparty/PaddleOCR-json_v1.4.1/PaddleOCR-json.exe", my_argument)
@@ -41,6 +51,9 @@ def compare_the_blacklist(pic_byte_stream, language="models/config_en.txt"):
 
 
 def get_theme_pack(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png"):
+    # 添加语言标识
+    img_model_path = get_pic_model_path_by_lang(img_model_path)
+
     # 对当前页面进行截图
     win_cap()
     if environ.get('window_size'):
@@ -49,6 +62,8 @@ def get_theme_pack(img_model_path, precision=0.8, scale=0, screenshot="./screens
     scale_factors = [0.75, 1.0, 0.5, 0.625, 1.25, 1.5]
     scale_factors2 = [1, 1.333, 0.667, 0.833, 1.667, 2]
     # 初始化目标截图
+        # 添加语言标识
+    screenshot = get_pic_model_path_by_lang(screenshot)
     try:
         my_screenshot = get_grey_normalized_pic(screenshot)
     except:
@@ -130,8 +145,17 @@ def get_theme_pack(img_model_path, precision=0.8, scale=0, screenshot="./screens
     return all_byte_stream
 
 
-def search_team_number(pic_byte_stream, number, language="models/config_en.txt"):
+def search_team_number(pic_byte_stream, number, language="undefine"):
+    #如果没有选择语言则根据设置选择
+    config_datas = get_yaml_information()
+    if language == "undefine":
+        langs = {
+            0: "en",
+            1: "chinese"
+        }
+        lang = langs.get(config_datas.get("set_lang_setting", 0), "en")
     # 使用的识别语言配置文件
+    language = f"models/config_{lang}.txt"
     my_argument = {"config_path": language}
     # 初始化识别器对象，传入 PaddleOCR-json.exe
     ocr = GetOcrApi("./3rdparty/PaddleOCR-json_v1.4.1/PaddleOCR-json.exe", my_argument)
@@ -139,7 +163,12 @@ def search_team_number(pic_byte_stream, number, language="models/config_en.txt")
     res = ocr.runBytes(pic_byte_stream)
     # 提取文本块数据
     data_blocks = res["data"]
-    team_num = "TEAMS#" + str(number)
+    team_langs = {
+        0: "TEAMS#",
+        1: "编队#"
+    }
+    TEAMS = team_langs.get(config_datas.get("set_lang_setting", 0), "TEAMS#")
+    team_num = f"{TEAMS}{number}"
     my_position = None
     for data in data_blocks:
         if data['text'] == team_num:
@@ -154,6 +183,9 @@ def search_team_number(pic_byte_stream, number, language="models/config_en.txt")
 
 
 def get_all_team(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png"):
+    # 添加语言标识
+    img_model_path = get_pic_model_path_by_lang(img_model_path)
+
     # 对当前页面进行截图
     win_cap()
     if environ.get('window_size'):
@@ -162,6 +194,8 @@ def get_all_team(img_model_path, precision=0.8, scale=0, screenshot="./screensho
     scale_factors = [0.75, 1.0, 0.5, 0.625, 1.25, 1.5]
     scale_factors2 = [1, 1.333, 0.667, 0.833, 1.667, 2]
     # 初始化目标截图
+        # 添加语言标识
+    screenshot = get_pic_model_path_by_lang(screenshot)
     try:
         my_screenshot = get_grey_normalized_pic(screenshot)
     except:
@@ -279,6 +313,9 @@ def commom_all_ocr(scale=0, screenshot="./screenshot.png"):
 
 
 def commom_ocr(img_model_path, width=50, height=50, precision=0.8, scale=0, screenshot="./screenshot.png"):
+    # 添加语言标识
+    img_model_path = get_pic_model_path_by_lang(img_model_path)
+
     # 对当前页面进行截图
     win_cap()
     if environ.get('window_size'):
@@ -289,6 +326,8 @@ def commom_ocr(img_model_path, width=50, height=50, precision=0.8, scale=0, scre
     width = int(width*scale_factors2[scale])
     height = int(height*scale_factors2[scale])
     # 初始化目标截图
+        # 添加语言标识
+    screenshot = get_pic_model_path_by_lang(screenshot)
     try:
         my_screenshot = get_grey_normalized_pic(screenshot)
     except:
@@ -398,8 +437,17 @@ def commom_range_ocr(upper_left_corner, lower_right_corner, hight=0, width=0, pr
     return byte_stream_read
 
 
-def commom_gain_text(pic_byte_stream, language="models/config_en.txt"):
+def commom_gain_text(pic_byte_stream, language="undefine"):
+    #如果没有选择语言则根据设置选择
+    if language == "undefine":
+        config_datas = get_yaml_information()
+        langs = {
+            0: "en",
+            1: "chinese"
+        }
+        lang = langs.get(config_datas.get("set_lang_setting", 0), "en")
     # 使用的识别语言配置文件
+    language = f"models/config_{lang}.txt"
     my_argument = {"config_path": language}
     # 初始化识别器对象，传入 PaddleOCR-json.exe
     ocr = GetOcrApi("./3rdparty/PaddleOCR-json_v1.4.1/PaddleOCR-json.exe", my_argument)

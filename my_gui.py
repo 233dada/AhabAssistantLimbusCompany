@@ -331,7 +331,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.set_get_prize.setEnabled(False)
         self.select_all.setEnabled(False)
         self.select_none.setEnabled(False)
-        self.set_lang_setting(False)
+        self.set_lang_setting.setEnabled(False)
 
     def setting_available(self):
         # 使所有设置项可用
