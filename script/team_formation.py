@@ -7,6 +7,7 @@ from my_decorator.decorator import begin_and_finish_time_log
 from my_log.my_log import my_log
 from my_ocr.ocr import get_all_team, search_team_number, commom_gain_text, commom_all_ocr, commom_range_ocr, \
     find_and_click_text
+from command.use_yaml import get_yaml_information
 
 all_sinner = {
     1: "YiSang", 2: "Faust", 3: "DonQuixote",
@@ -18,11 +19,27 @@ all_sinner = {
 
 pic_path = "./pic/teams/"
 
+clear_dict = {
+    0: "clear",
+    1: "重置"
+}
 
+confirm_dict = {
+    0: "confirm",
+    1: "确认"
+}
 # 清队
 def clean_team():
-    find_and_click_text("clear")
-    find_and_click_text("confirm")
+    find_and_click_text(
+        clear_dict.get(
+            get_yaml_information().get("set_lang_setting", 0), "clear"
+        )
+    )
+    find_and_click_text(
+        confirm_dict.get(
+            get_yaml_information().get("set_lang_setting", 0), "confirm"
+        )
+    )
 
 
 @begin_and_finish_time_log(task_name="罪人编队")
@@ -86,7 +103,7 @@ def select_battle_team(num):
 
 @begin_and_finish_time_log(task_name="检查队伍剩余战斗力")
 def check_team():
-    leave = commom_gain_text(commom_all_ocr()[0], language="models/config_en.txt")
+    leave = commom_gain_text(commom_all_ocr()[0])
     # 至少还有5人可以战斗
     sinner_nums = [f"{a}/{b}" for b in range(5, 10) for a in range(5, b + 1)]
     p1, p2 = None, None
@@ -96,7 +113,7 @@ def check_team():
             p1 = [box[0][0], box[0][1]]
             p2 = [box[2][0], box[2][1]]
     p2[1] += 180
-    leave = commom_gain_text(commom_range_ocr(p1, p2), language="models/config_en.txt")
+    leave = commom_gain_text(commom_range_ocr(p1, p2))
     all_text = ""
     for b in leave:
         all_text += b['text'].lower() + " "

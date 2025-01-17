@@ -586,8 +586,9 @@ def execute_a_mirror(sinner_team, which_team, shop_sell_list, fuse_switch, syste
     # 记录商店楼层
     store_floors = 1
 
-    if get_pic_position("./pic/teams/to_battle.png"):
+    if get_pic_position("./pic/teams/to_battle.png") or get_pic_position("./pic/teams/to_battle_continuous.png"):
         mouse_click(get_pic_position("./pic/scenes/the_back_button.png"))
+
     if get_pic_position("./pic/scenes/road_in_mirror.png") is None and get_pic_position(
             "./pic/mirror/theme_pack_features.png") is None:
         road_to_mir()
@@ -619,7 +620,10 @@ def execute_a_mirror(sinner_team, which_team, shop_sell_list, fuse_switch, syste
                 # 如果还有至少5人能战斗就继续，不然就退出重开
                 if continue_mirror is False and first_battle is False:
                     return False
-            mouse_click(get_pic_position("./pic/teams/to_battle.png"))
+            if get_pic_position("./pic/teams/to_battle.png"):
+                mouse_click(get_pic_position("./pic/teams/to_battle.png"))
+            elif get_pic_position("./pic/teams/to_battle_continuous.png"):
+                mouse_click(get_pic_position("./pic/teams/to_battle_continuous.png"))
             sleep(0.5)
 
             if get_pic_position("./pic/teams/select_none.png"):

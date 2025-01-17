@@ -13,14 +13,17 @@ from script.some_script_in_MD import get_reward_card
 
 
 @begin_and_finish_time_log(task_name="返回主界面")
-def back_init_menu():
+def back_init_menu(lang_model=-1):
     loop_count = 0
-    while (where := where_am_i()) != 30:
+    while (where := where_am_i(lang_model)) != 30:
         msg = f"识别得知此时位置为代号{where}"
         my_log("debug", msg)
 
         if where == 51:
             mouse_click_blank()
+        # 编队
+        elif where == 1:
+            pyautogui.press('esc')
 
         # 战斗途中，先战斗完再返回
         elif where == 2:
@@ -94,9 +97,14 @@ def back_init_menu():
             continue
 
         elif where == -1:
-            pyautogui.press('esc')
-            sleep(2)
-            continue
+            if lang_model == -1:
+                my_log("warning", f"当前语言未发现界面位置, 切换至英文")
+                back_init_menu(0)
+                return
+            else:
+                pyautogui.press('esc')
+                sleep(2)
+                continue
 
         loop_count += 1
 

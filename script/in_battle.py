@@ -53,6 +53,10 @@ def battle():
         if in_mirror is False and get_pic_position("./pic/battle/in_mirror_battle.png"):
             in_mirror = True
 
+        # 如果在编队位置
+        if get_pic_position("./pic/teams/teams.png"):
+            pyautogui.press('enter')
+
         # 如果正在交战过程
         if get_pic_position("./pic/battle/pause.png"):
             sleep(2 * waiting)  # 战斗播片中增大间隔

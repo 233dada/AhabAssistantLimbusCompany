@@ -14,18 +14,23 @@ from my_log.my_log import my_log
 from my_ocr.PPOCR_api import GetOcrApi
 from command.get_position import get_pic_model_path_by_lang
 
-
-def compare_the_blacklist(pic_byte_stream, language= "undefine"):
+def ocr_model(lang_model="undefine"):
     #如果没有选择语言则根据设置选择
-    if language == "undefine":
+    if lang_model == "undefine":
         config_datas = get_yaml_information()
         langs = {
             0: "en",
             1: "chinese"
         }
         lang = langs.get(config_datas.get("set_lang_setting", 0), "en")
+    else:
+        lang = "en"
+    return lang
+
+def compare_the_blacklist(pic_byte_stream, lang_model="undefine"):
+
     # 使用的识别语言配置文件
-    language = f"models/config_{lang}.txt"
+    language = f"models/config_{ocr_model(lang_model)}.txt"
 
     my_argument = {"config_path": language}
     # 初始化识别器对象，传入 PaddleOCR-json.exe
@@ -38,8 +43,10 @@ def compare_the_blacklist(pic_byte_stream, language= "undefine"):
     text_values = [d.get("text", "") for d in text_blocks]
     # 获取黑名单
     black_list = get_black_list_keyword_yaml()
-    keywords = black_list["keys"]
 
+    keywords = black_list["keys"]
+    my_log("debug", f"当前应用的黑名单关键词有: {keywords}")
+    
     # 与黑名单进行比对
     for key in keywords:
         # 如果出现黑名单关键词，则跳过
@@ -145,17 +152,11 @@ def get_theme_pack(img_model_path, precision=0.8, scale=0, screenshot="./screens
     return all_byte_stream
 
 
-def search_team_number(pic_byte_stream, number, language="undefine"):
-    #如果没有选择语言则根据设置选择
-    config_datas = get_yaml_information()
-    if language == "undefine":
-        langs = {
-            0: "en",
-            1: "chinese"
-        }
-        lang = langs.get(config_datas.get("set_lang_setting", 0), "en")
+def search_team_number(pic_byte_stream, number, lang_model="undefine"):
+
     # 使用的识别语言配置文件
-    language = f"models/config_{lang}.txt"
+    language = f"models/config_{ocr_model(lang_model)}.txt"
+
     my_argument = {"config_path": language}
     # 初始化识别器对象，传入 PaddleOCR-json.exe
     ocr = GetOcrApi("./3rdparty/PaddleOCR-json_v1.4.1/PaddleOCR-json.exe", my_argument)
@@ -167,7 +168,10 @@ def search_team_number(pic_byte_stream, number, language="undefine"):
         0: "TEAMS#",
         1: "编队#"
     }
-    TEAMS = team_langs.get(config_datas.get("set_lang_setting", 0), "TEAMS#")
+    TEAMS = team_langs.get(
+        get_yaml_information().get("set_lang_setting", 0)
+        , "TEAMS#"
+    )
     team_num = f"{TEAMS}{number}"
     my_position = None
     for data in data_blocks:
@@ -437,17 +441,11 @@ def commom_range_ocr(upper_left_corner, lower_right_corner, hight=0, width=0, pr
     return byte_stream_read
 
 
-def commom_gain_text(pic_byte_stream, language="undefine"):
-    #如果没有选择语言则根据设置选择
-    if language == "undefine":
-        config_datas = get_yaml_information()
-        langs = {
-            0: "en",
-            1: "chinese"
-        }
-        lang = langs.get(config_datas.get("set_lang_setting", 0), "en")
+def commom_gain_text(pic_byte_stream, lang_model="undefine"):
+
     # 使用的识别语言配置文件
-    language = f"models/config_{lang}.txt"
+    language = f"models/config_{ocr_model(lang_model)}.txt"
+
     my_argument = {"config_path": language}
     # 初始化识别器对象，传入 PaddleOCR-json.exe
     ocr = GetOcrApi("./3rdparty/PaddleOCR-json_v1.4.1/PaddleOCR-json.exe", my_argument)
@@ -459,6 +457,7 @@ def commom_gain_text(pic_byte_stream, language="undefine"):
 
 
 def find_and_click_text(word):
+
     leave = commom_gain_text(commom_all_ocr()[0])
     p = []
     if "No text found in image." in leave:

@@ -9,7 +9,7 @@ from my_error.my_error import withOutPicError
 from my_log.my_log import my_log
 from command.use_yaml import get_yaml_information
 
-def get_pic_model_path_by_lang(file_path):
+def get_pic_model_path_by_lang(file_path, lang_model=-1):
     if path.exists(file_path):
         return file_path
     # 获取 YAML 文件信息
@@ -25,7 +25,10 @@ def get_pic_model_path_by_lang(file_path):
     }
 
     # 确定语言目录
-    lang_dir = lang_dirs.get(config_datas.get("set_lang_setting", 0), "./pic/en_US")
+    if lang_model == -1:
+        lang_dir = lang_dirs.get(config_datas.get("set_lang_setting", 0), "./pic/en_US")
+    else:
+        lang_dir = lang_dirs.get(lang_model, "./pic/en_US")
 
     # 移除 "./pic" 前缀
     if file_path.startswith("./pic") or file_path.startswith(".\\pic"):
@@ -51,9 +54,9 @@ def get_pic_model_path_by_lang(file_path):
         my_log("debug", msg)
     return img_model_path
 
-def get_pic_position(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png"):
+def get_pic_position(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png", lang_model=-1):
     # 添加语言标识
-    img_model_path = get_pic_model_path_by_lang(img_model_path)
+    img_model_path = get_pic_model_path_by_lang(img_model_path, lang_model)
 
     # 对当前页面进行截图
     win_cap()
@@ -63,7 +66,7 @@ def get_pic_position(img_model_path, precision=0.8, scale=0, screenshot="./scree
     scale_factors = [0.75, 1.0, 0.5, 0.625, 1.25, 1.5]
     # 初始化目标截图
         # 添加语言标识
-    screenshot = get_pic_model_path_by_lang(screenshot)
+    screenshot = get_pic_model_path_by_lang(screenshot, lang_model)
     try:
         my_screenshot = get_grey_normalized_pic(screenshot)
     except:
@@ -102,9 +105,9 @@ def get_pic_position(img_model_path, precision=0.8, scale=0, screenshot="./scree
     return None
 
 
-def get_pic_temp_position(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png"):
+def get_pic_temp_position(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png", lang_model=-1):
     # 添加语言标识
-    img_model_path = get_pic_model_path_by_lang(img_model_path)
+    img_model_path = get_pic_model_path_by_lang(img_model_path, lang_model)
     # 对当前页面进行截图
     win_cap()
     if environ.get('window_size'):
@@ -113,7 +116,7 @@ def get_pic_temp_position(img_model_path, precision=0.8, scale=0, screenshot="./
     scale_factors = [0.75, 1.0, 0.5, 0.625, 1.25, 1.5]
     # 初始化目标截图
             # 添加语言标识
-    screenshot = get_pic_model_path_by_lang(screenshot)
+    screenshot = get_pic_model_path_by_lang(screenshot, lang_model)
     try:
         my_screenshot = get_grey_normalized_pic(screenshot)
     except:
@@ -146,9 +149,9 @@ def get_pic_temp_position(img_model_path, precision=0.8, scale=0, screenshot="./
     return None
 
 
-def get_all_pic_position(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png"):
+def get_all_pic_position(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png", lang_model=-1):
     # 添加语言标识
-    img_model_path = get_pic_model_path_by_lang(img_model_path)
+    img_model_path = get_pic_model_path_by_lang(img_model_path, lang_model)
     # 对当前页面进行截图
     win_cap()
     if environ.get('window_size'):
@@ -157,7 +160,7 @@ def get_all_pic_position(img_model_path, precision=0.8, scale=0, screenshot="./s
     scale_factors = [0.75, 1.0, 0.5, 0.625, 1.25, 1.5]
     # 初始化目标截图
             # 添加语言标识
-    screenshot = get_pic_model_path_by_lang(screenshot)
+    screenshot = get_pic_model_path_by_lang(screenshot, lang_model)
     try:
         my_screenshot = get_grey_normalized_pic(screenshot)
     except:
@@ -210,14 +213,14 @@ def get_all_pic_position(img_model_path, precision=0.8, scale=0, screenshot="./s
 
 
 # 本来用来找镜牢中的巴士，但是用不上了
-def get_pic_keypoints_position(img_model_path, screenshot="./screenshot.png"):
+def get_pic_keypoints_position(img_model_path, screenshot="./screenshot.png", lang_model=-1):
     # 添加语言标识
-    img_model_path = get_pic_model_path_by_lang(img_model_path)
+    img_model_path = get_pic_model_path_by_lang(img_model_path, lang_model)
     # 对当前页面进行截图
     win_cap()
     # 初始化目标截图
             # 添加语言标识
-    screenshot = get_pic_model_path_by_lang(screenshot)
+    screenshot = get_pic_model_path_by_lang(screenshot, lang_model)
     my_screenshot = cv2.imread(screenshot, cv2.IMREAD_GRAYSCALE)
     my_model = cv2.imread(img_model_path, cv2.IMREAD_GRAYSCALE)
 
@@ -273,9 +276,9 @@ def get_pic_keypoints_position(img_model_path, screenshot="./screenshot.png"):
     return None
 
 
-def get_pic_position_without_cap(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png"):
+def get_pic_position_without_cap(img_model_path, precision=0.8, scale=0, screenshot="./screenshot.png", lang_model=-1):
     # 添加语言标识
-    img_model_path = get_pic_model_path_by_lang(img_model_path)
+    img_model_path = get_pic_model_path_by_lang(img_model_path, lang_model)
     if environ.get('window_size'):
         scale = int(environ.get('window_size'))
     # 设置缩放比例
