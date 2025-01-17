@@ -4,8 +4,8 @@ from my_decorator.decorator import begin_and_finish_time_log
 from my_log.my_log import my_log
 import re
 
-API_URL = "https://api.github.com/repos/233dada/AhabAssistantLimbusCompany/releases/latest"
-version = '' 
+API_URL="https://api.github.com/repos/233dada/AhabAssistantLimbusCompany/releases/latest"
+version='' 
 
 @begin_and_finish_time_log(task_name="检查更新")
 def check_update():
@@ -16,7 +16,6 @@ def check_update():
     except requests.exceptions.RequestException as e:
         # 捕获网络相关的异常并记录日志
         my_log("warning", f"无法检测更新，请检查网络连接: {e}")
-        
         return
 
     try:
@@ -36,17 +35,16 @@ def check_update():
                 current_version = match.group(1)
                 if current_version == version:
                     my_log("info", f"当前版本为最新版本：{current_version}")
-                    print(f"当前版本为最新版本：{current_version}")
                     return
                 else:
                     download_url = asset['browser_download_url']
                     break
+
     else:
         # 如果循环结束后没有找到下载链接
         my_log("info", "未找到更新文件 (.7z)")
         print("未找到更新文件 (.7z)")
         return
-
     if download_url:
         file_name = download_url.split('/')[-1]  # 提取文件名
         my_log("info", f"正在下载 {file_name} ...")
