@@ -6,7 +6,7 @@ import re
 from packaging import version
 
 API_URL="https://api.github.com/repos/233dada/AhabAssistantLimbusCompany/releases/latest"
-local_version='' 
+local_version="" 
 
 @begin_and_finish_time_log(task_name="检查更新")
 def check_update():
