@@ -3,9 +3,10 @@ import requests
 from my_decorator.decorator import begin_and_finish_time_log
 from my_log.my_log import my_log
 import re
+from packaging import version
 
 API_URL="https://api.github.com/repos/233dada/AhabAssistantLimbusCompany/releases/latest"
-version='' 
+local_version='' 
 
 @begin_and_finish_time_log(task_name="检查更新")
 def check_update():
@@ -33,10 +34,13 @@ def check_update():
             match = re.search(r'AALC_(.+)\.7z', asset['name'])
             if match:
                 current_version = match.group(1)
-                if current_version == version:
+                if current_version == local_version:
                     my_log("info", f"当前版本为最新版本：{current_version}")
                     return
+                elif version.parse(current_version.lstrip('Vv')) < version.parse(local_version.lstrip('Vv')):
+                    my_log("info", f"当前版本高于最新版本：{current_version}")
                 else:
+                    my_log("info", f"本地版本为 {local_version}, 低于云端版本{current_version}")
                     download_url = asset['browser_download_url']
                     break
 
