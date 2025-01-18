@@ -136,6 +136,7 @@ def script_task():
         win_size = all_setting["set_win"]["set_win_size"]
         environ['window_size'] = f"{win_size}"
         adjust_position_and_size(handle)
+        sleep(1) #防卡死
         # back_init_menu()
         # make_enkephalin_module()
 

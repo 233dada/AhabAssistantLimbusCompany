@@ -10,6 +10,10 @@ local_version=""
 
 @begin_and_finish_time_log(task_name="检查更新")
 def check_update():
+    global local_version
+    if local_version == "":
+        my_log("info", f"当前版本号为空, 如果你是从Github上下载的请联系开发者")
+        return
     try:
         # 尝试获取 GitHub 最新版本信息
         response = requests.get(API_URL, timeout=10)

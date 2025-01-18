@@ -104,11 +104,22 @@ def select_battle_team(num):
 @begin_and_finish_time_log(task_name="检查队伍剩余战斗力")
 def check_team():
     leave = commom_gain_text(commom_all_ocr()[0])
+    selection_dict = {
+        0: "selection",
+        1: "选择"
+    }
+
+    selection = selection_dict.get(
+        get_yaml_information().get(
+            "set_lang_setting", 0
+        ) , "selection"
+    )
+
     # 至少还有5人可以战斗
     sinner_nums = [f"{a}/{b}" for b in range(5, 10) for a in range(5, b + 1)]
     p1, p2 = None, None
     for b in leave:
-        if "selection" in b['text'].lower():
+        if selection in b['text'].lower():
             box = b['box']
             p1 = [box[0][0], box[0][1]]
             p2 = [box[2][0], box[2][1]]

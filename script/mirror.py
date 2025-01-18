@@ -518,9 +518,12 @@ def in_shop(system, shop_sell_list, store_floors, fuse_switch):
                 mouse_click(refresh_shop)
                 sleep(0.5)
                 mouse_click(get_pic_position(f"./pic/mirror/mirror5/shop/keyword_{system}.png"))
-                mouse_click(get_pic_position("./pic/mirror/mirror5/shop/refresh_shop_confirm.png"))
-                sleep(1)
-                buy_gifts(system)
+                if get_pic_position("./pic/mirror/mirror5/shop/refresh_shop_confirm.png"):
+                    mouse_click(get_pic_position("./pic/mirror/mirror5/shop/refresh_shop_confirm.png"))
+                    sleep(1)
+                    buy_gifts(system)
+                else:
+                    break
 
     mouse_click_blank(times=3)
 
