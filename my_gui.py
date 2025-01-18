@@ -9,7 +9,7 @@ from pynput import keyboard
 
 from command.adjust_position_and_siz import reset_win
 from command.get_win_handle import get_win_handle
-from command.use_yaml import get_yaml_information, save_yaml, replace_old_with_new, add_keyword_to_yaml
+from command.use_yaml import get_yaml_information, save_yaml, replace_old_with_new, add_keyword_to_yaml,yaml_check
 from main_windows import Ui_MainWindow
 from my_log.my_log import my_log
 from script.script_task_scheme import my_script_task
@@ -29,6 +29,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     clear_signal = pyqtSignal()  # 用于右边日志栏清理
 
     def __init__(self, parent=None):
+        yaml_check()
         super(MainWindow, self).__init__(parent)
         self.my_script = None
         self.last_position = 0

@@ -51,12 +51,10 @@ def check_update():
     else:
         # 如果循环结束后没有找到下载链接
         my_log("info", "未找到更新文件 (.7z)")
-        print("未找到更新文件 (.7z)")
         return
     if download_url:
         file_name = download_url.split('/')[-1]  # 提取文件名
         my_log("info", f"正在下载 {file_name} ...")
-        print(f"正在下载 {file_name} ...")
 
         try:
             # 下载文件
@@ -65,13 +63,10 @@ def check_update():
                 with open(file_name, 'wb') as f:
                     for chunk in r.iter_content(chunk_size=8192):
                         f.write(chunk)
-            print(f"下载完成，请手动解压 {file_name} 完成更新")
-            my_log("info", f"下载完成：{file_name}")
+            my_log("info", f"下载完成：{file_name}, 请手动解压")
         except requests.exceptions.RequestException as e:
-            my_log("error", f"文件下载失败: {e}")
-            print(f"文件下载失败，请检查网络连接或下载链接：{e}")
+            my_log("error", f"文件下载失败，请检查网络连接或下载链接：{e}")
     else:
         my_log("warning", "未找到有效的下载链接")
-        print("未找到有效的下载链接")
 
     return

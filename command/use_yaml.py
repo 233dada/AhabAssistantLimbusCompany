@@ -1,6 +1,6 @@
 # import yaml
 from ruamel.yaml import YAML
-
+from os import path
 from my_log.my_log import my_log
 
 yaml = YAML()
@@ -353,8 +353,50 @@ default_blacklist = {
     ]
 }
 
+def yaml_check():
+    yaml.allow_unicode = True
+    '''
+    用于检查yaml是否存在某个本应存在的值
+    同时写入
+    '''
+    if not path.exists("./config.yaml"):
+        return
+    
+    try:
+        with open('config.yaml', 'r', encoding='utf-8') as file:
+            config = yaml.load(file)
+    except Exception as e:
+        my_log("debug", f"读取{e}失败")
+        return
+    
+    if config is None:
+        config = {}
+    def update_recursive(default, current, key_path=None):
+        """
+    递归更新字典 default 到字典 current 中，并记录日志。
+        """
+        if key_path is None:
+            key_path = []
+
+        for key, value in default.items():
+            current_path = key_path + [key]  # 构造当前键路径
+            path_str = " -> ".join(current_path)  # 转换路径为可读字符串
+
+            if key not in current:
+                my_log("debug", f"{path_str} 不存在, 正在插入 {value}")
+                current[key] = value
+            elif isinstance(value, dict) and isinstance(current.get(key), dict):
+                # 如果值是嵌套字典，递归处理
+                update_recursive(value, current[key], current_path)
+
+    update_recursive(default_config, config)
+
+    with open('config.yaml', "w", encoding="utf-8") as file:
+        yaml.dump(config, file)
+        my_log("debug", f"写入完毕")
 
 def get_yaml_information():
+
     try:
         with open('config.yaml', 'r', encoding='utf-8') as file:
             config_data = yaml.load(file)
