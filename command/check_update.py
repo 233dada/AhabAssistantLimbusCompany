@@ -14,6 +14,9 @@ def check_update():
     if local_version == "":
         my_log("info", f"当前版本号为空, 如果你是从Github上下载的请联系开发者")
         return
+    elif re.match(r'^[a-f0-9]{40}$', local_version):
+        my_log("info", f"当前版本为CI构建版, 不进行自动更新")
+        return
     try:
         # 尝试获取 GitHub 最新版本信息
         response = requests.get(API_URL, timeout=10)
