@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, QT_TRANSLATE_NOOP
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QFileDialog
 from qfluentwidgets import FluentIcon as FIF
@@ -7,7 +7,7 @@ from qfluentwidgets import ScrollArea, ExpandLayout, SettingCardGroup, PushSetti
 
 from app.base_combination import ComboBoxSettingCard, SwitchSettingCard, PushSettingCardMirrorchyan
 from module.config import cfg
-
+from app.language_manager import SUPPORTED_LANG_NAME
 
 class SettingInterface(ScrollArea):
     def __init__(self, parent=None):
@@ -26,12 +26,12 @@ class SettingInterface(ScrollArea):
         self.setWidgetResizable(True)
 
     def __init_card(self):
-        self.game_setting_group = SettingCardGroup("游戏设置", self.scroll_widget)
+        self.game_setting_group = MY_SettingCardGroup(QT_TRANSLATE_NOOP("MY_SettingCardGroup","游戏设置"), self.scroll_widget)
         self.game_setting_card = ComboBoxSettingCard(
             "select_team_by_order",
             FIF.SEARCH,
-            self.tr('选择队伍方式'),
-            self.tr('设置选择队伍方式'),
+            QT_TRANSLATE_NOOP('ComboBoxSettingCard','选择队伍方式'),
+            QT_TRANSLATE_NOOP('ComboBoxSettingCard','设置选择队伍方式'),
             texts={'使用队伍名':False, '使用队伍序号':"en"},
             parent=self.game_setting_group
         )
@@ -51,7 +51,7 @@ class SettingInterface(ScrollArea):
             FIF.LANGUAGE,
             self.tr('语言'),
             self.tr('设置程序 UI 使用的语言'),
-            texts={'简体中文':"zh_cn", 'English':"en"},
+            texts=SUPPORTED_LANG_NAME,
             parent=self.personal_group
         )
 
@@ -172,3 +172,15 @@ class SettingInterface(ScrollArea):
 
     def __openUrl(self, url):
         return lambda: QDesktopServices.openUrl(QUrl(url))
+    
+    def retranslateUi(self):
+        self.game_setting_group.retranslateUi()
+        self.game_setting_card.retranslateUi()
+
+class MY_SettingCardGroup(SettingCardGroup):
+    def __init__(self, title: str, parent=None):
+        super().__init__(title, parent)
+        self.title = title
+
+    def retranslateUi(self):
+        self.titleLabel.setText(self.tr(self.title))

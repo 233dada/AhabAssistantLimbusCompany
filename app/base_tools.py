@@ -70,6 +70,7 @@ class BaseCheckBox(BaseLayout):
             self.hBoxLayout.addWidget(self.iconLabel, 0, Qt.AlignLeft)
             self.hBoxLayout.addSpacing(5)
 
+        self.check_box_title = title
         self.check_box = CheckBox(title, self)
         self.hBoxLayout.addWidget(self.check_box, 0, Qt.AlignLeft)
         self.hBoxLayout.addSpacing(16)
@@ -90,6 +91,10 @@ class BaseCheckBox(BaseLayout):
 
         if self.config_name in ["hard_mirror","no_weekly_bonuses"]:
             self.check_box.setChecked(False)
+
+    def retranslateUi(self):
+        self.check_box.setText(self.tr(self.check_box_title))
+
 
     def set_checked(self, checked):
         self.check_box.toggled.disconnect(self.on_toggle)

@@ -215,4 +215,7 @@ class MainWindow(FramelessWindow):
             source_file = os.path.abspath("./AALC Updater.exe")
             assert_name = file_name
             subprocess.Popen([source_file, assert_name], creationflags=subprocess.DETACHED_PROCESS)
+
+    def retranslateUi(self):
+        pass
         

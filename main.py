@@ -2,6 +2,7 @@ import os
 import sys
 
 from app.my_app import MainWindow
+from app.language_manager import LanguageManager
 
 # 将当前工作目录设置为程序所在的目录，确保无论从哪里执行，其工作目录都正确设置为程序本身的位置，避免路径错误。
 os.chdir(
@@ -41,5 +42,10 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+    lang_manager = LanguageManager.instance()
     ui = MainWindow()
+
+    lang_manager.register(ui)
+    lang_manager.init_language()
+    
     sys.exit(app.exec_())

@@ -6,6 +6,7 @@ from qfluentwidgets import LineEdit, SettingCard, \
 
 from app.base_tools import *
 from app.card.messagebox_custom import MessageBoxEdit
+from app.language_manager import LanguageManager
 from module.update.check_update import check_update
 
 
@@ -14,6 +15,8 @@ class CheckBoxWithButton(QFrame):
                  button_name, parent=None):
         super().__init__(parent)
         #self.setFixedHeight(80)
+        self.box_title = check_box_title
+
         self.hBoxLayout = QHBoxLayout(self)
         self.box = BaseCheckBox(check_box_name, check_box_icon, check_box_title, parent=self)
         self.button = ChangePageButton(button_name, parent=self)
@@ -24,6 +27,10 @@ class CheckBoxWithButton(QFrame):
 
     def set_box_enabled(self,b:bool):
         self.box.set_box_enabled(b)
+
+    def retranslateUi(self):
+        # self.box.retranslateUi()
+        self.box.check_box.setText(self.tr(self.box_title))
 
 
 class CheckBoxWithLineEdit(QFrame):
@@ -259,6 +266,10 @@ class ComboBoxSettingCard(SettingCard):
     def __init__(self, config_name: str, icon: Union[str, QIcon, FluentIconBase], title, content=None, texts=None, parent=None):
         super().__init__(icon, title, content, parent)
         self.config_name = config_name
+
+        self.title = title
+        self.content = content
+
         self.comboBox = ComboBox(self)
         self.hBoxLayout.addWidget(self.comboBox, 0, Qt.AlignRight)
         self.hBoxLayout.addSpacing(16)
@@ -272,6 +283,16 @@ class ComboBoxSettingCard(SettingCard):
 
     def _onCurrentIndexChanged(self, index: int):
         cfg.set_value(self.config_name, self.comboBox.itemData(index))
+        if self.config_name == "language_in_program":
+            lang_M = LanguageManager.instance()
+            lang_M.set_language(self.comboBox.itemData(index))
+
+    def retranslateUi(self):
+        self.setTitle(self.tr(self.title))
+        self.setContent(self.tr(self.content))
+        
+
+
 
 
 class PushSettingCardMirrorchyan(SettingCard):
