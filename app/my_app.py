@@ -1,6 +1,7 @@
 import datetime
 import os
 import re
+import subprocess
 from enum import Enum
 
 from PyQt5.QtCore import Qt, QLocale
@@ -11,7 +12,7 @@ from qfluentwidgets.components.widgets.frameless_window import FramelessWindow
 from qframelesswindow import StandardTitleBar
 
 from app import mediator
-from app.card.messagebox_custom import MessageBoxWarning
+from app.card.messagebox_custom import MessageBoxWarning, MessageBoxConfirm
 from app.farming_interface import FarmingInterface
 from app.page_card import MarkdownViewer
 from app.setting_interface import SettingInterface
@@ -53,7 +54,7 @@ class MainWindow(FramelessWindow):
         self.progress_ring = ProgressRing(self)
         self.progress_ring.hide()
 
-        self.resize(1080,800)
+        self.resize(1080,600)
         desktop = QApplication.desktop().availableGeometry()
         w, h = desktop.width(), desktop.height()
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
@@ -74,8 +75,6 @@ class MainWindow(FramelessWindow):
             self.help_interface = MarkdownViewer("./assets/doc/zh/How_to_use.md")
         else:
             self.help_interface = MarkdownViewer("./assets/doc/en/How_to_use_EN.md")
-        # 手动处理链接点击以处理md文件
-        self.help_interface.linkClicked.connect(self.handle_link_click)
 
         self.setting_interface = SettingInterface(self)
         #self.team_setting = TeamSettingCard(self)
@@ -86,14 +85,11 @@ class MainWindow(FramelessWindow):
         self.addSubInterface(self.setting_interface, 'setting_interface', '设置')
         #self.addSubInterface(self.team_setting, 'team_setting', '队伍设置')
 
-
-        
-
         self.HBoxLayout.addWidget(self.pivot)
         self.vBoxLayout.addSpacing(10)
         self.vBoxLayout.addLayout(self.HBoxLayout,0)
         self.vBoxLayout.addWidget(self.stackedWidget)
-        self.vBoxLayout.setContentsMargins(30, 20, 30, 30)
+        self.vBoxLayout.setContentsMargins(30, 20, 30, 0)
         self.pivot.setMaximumHeight(50)
 
         self.stackedWidget.setCurrentWidget(self.farming_interface)
@@ -161,6 +157,7 @@ class MainWindow(FramelessWindow):
         mediator.close_setting.connect(self.close_setting_page)
         mediator.save_warning.connect(self.show_save_warning)
         mediator.update_progress.connect(self.set_progress_ring)
+        mediator.download_complete.connect(self.download_and_install)
 
     @staticmethod
     def clean_old_logs():
@@ -205,8 +202,17 @@ class MainWindow(FramelessWindow):
 
     def handle_link_click(self, url:str):
         """处理帮助文档中的链接点击"""
-        
-        
         if url.endswith(".md"):
             self.help_interface.load_markdown(url)
+
+    def download_and_install(self,file_name):
+        messages_box = MessageBoxConfirm(
+            "更新提醒",
+            "下载已经完成，是否开始更新",
+            self.window()
+        )
+        if messages_box.exec_():
+            source_file = os.path.abspath("./AALC Updater.exe")
+            assert_name = file_name
+            subprocess.Popen([source_file, assert_name], creationflags=subprocess.DETACHED_PROCESS)
         
