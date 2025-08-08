@@ -1,8 +1,10 @@
-from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QPixmap, QDesktopServices
+from PyQt5.QtCore import QUrl, QT_TRANSLATE_NOOP, QCoreApplication
+from PyQt5.QtGui import QIcon, QPixmap, QDesktopServices
 from PyQt5.QtWidgets import QPushButton
 from qfluentwidgets import LineEdit, SettingCard, \
-    IndicatorPosition, SwitchButton
+    IndicatorPosition, SwitchButton, SettingCardGroup, \
+    PushSettingCard, PrimaryPushSettingCard
+from qfluentwidgets.common.icon import FluentIconBase
 
 from app.base_tools import *
 from app.card.messagebox_custom import MessageBoxEdit
@@ -15,9 +17,10 @@ class CheckBoxWithButton(QFrame):
                  button_name, parent=None):
         super().__init__(parent)
         #self.setFixedHeight(80)
-        self.box_title = check_box_title
+
 
         self.hBoxLayout = QHBoxLayout(self)
+        self.box_text = check_box_title
         self.box = BaseCheckBox(check_box_name, check_box_icon, check_box_title, parent=self)
         self.button = ChangePageButton(button_name, parent=self)
         self.hBoxLayout.addWidget(self.box)
@@ -29,8 +32,7 @@ class CheckBoxWithButton(QFrame):
         self.box.set_box_enabled(b)
 
     def retranslateUi(self):
-        # self.box.retranslateUi()
-        self.box.check_box.setText(self.tr(self.box_title))
+        self.box.check_box.setText(self.tr(self.box_text))
 
 
 class CheckBoxWithLineEdit(QFrame):
@@ -71,6 +73,7 @@ class CheckBoxWithComboBox(QFrame):
         super().__init__(parent)
         #self.setFixedHeight(80)
         self.hBoxLayout = QHBoxLayout(self)
+        self.box_text = check_box_title
         self.box = BaseCheckBox(check_box_name, check_box_icon, check_box_title, parent=self, center=False)
         self.box.setFixedWidth(150)
         self.combo_box = BaseComboBox(combo_box_name,combo_box_width)
@@ -92,11 +95,16 @@ class CheckBoxWithComboBox(QFrame):
         except AttributeError:
             pass
 
+    def retranslateUi(self):
+        self.box.check_box.setText(self.tr(self.box_text))
 
 class LabelWithComboBox(QFrame):
     def __init__(self, label_text, config_name, items, vbox=True, parent=None):
         super().__init__(parent)
         self.setObjectName(config_name)
+
+        self.text = label_text
+
         if vbox:
             self.layout = QVBoxLayout(self)
         else:
@@ -116,11 +124,15 @@ class LabelWithComboBox(QFrame):
     def add_items(self, items):
         self.combo_box.add_items(items)
 
+    def retranslateUi(self):
+        self.label.label.setText(self.tr(self.text))
+
 
 class LabelWithSpinBox(QFrame):
     def __init__(self, label_text, box_name, parent=None, double=False, min_value=0.1, min_step=0.01):
         super().__init__(parent)
         self.vbox_layout = QVBoxLayout(self)
+        self.text = label_text
         self.label = BaseLabel(label_text)
         self.box = BaseSpinBox(box_name, double=double, min_value=min_value, min_step=min_step)
         self.vbox_layout.addWidget(self.label)
@@ -129,22 +141,30 @@ class LabelWithSpinBox(QFrame):
         self.setMaximumHeight(100)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
+    def retranslateUi(self):
+        self.label.label.setText(self.tr(self.text))
+
 class MirrorSpinBox(QFrame):
     def __init__(self, label_text, box_name, double=False, min_value=0, min_step=1):
         super().__init__()
         self.box_layout = QHBoxLayout(self)
+        self.text = label_text
         self.label = BaseLabel(label_text)
         self.box = BaseSpinBox(box_name, double=double, min_value=min_value, min_step=min_step)
         self.box_layout.addWidget(self.label,stretch=1)
         self.box_layout.addWidget(self.box,stretch=2)
         self.setMaximumHeight(70)
 
+    def retranslateUi(self):
+        self.label.label.setText(self.tr(self.text))
 
 class MirrorTeamCombination(QFrame):
     def __init__(self, team_number,check_box_name, check_box_title, check_box_icon: Union[str, QIcon, FluentIconBase, None],
                  button_name, parent=None):
         super().__init__(parent)
         self.setObjectName(f"team_{team_number}")
+
+        self.box_text = check_box_title
 
         self.hBoxLayout = QHBoxLayout(self)
         self.box = BaseCheckBox(check_box_name, check_box_icon, check_box_title, parent=self)
@@ -180,7 +200,11 @@ class MirrorTeamCombination(QFrame):
         name = cfg.get_value(f"team{self.team_number}_remark_name")
         if name is None:
             name=""
-        message_box = MessageBoxEdit("设置备注名",name, self.window())
+        message_box = MessageBoxEdit(
+            QT_TRANSLATE_NOOP("MessageBoxEdit","设置备注名"),
+            name, self.window()
+        )
+        self.retranslateTempUi(message_box)
         if message_box.exec():
             cfg.set_value(f"team{self.team_number}_remark_name", str(message_box.getText()))
             self.refresh_remark_name()
@@ -194,6 +218,25 @@ class MirrorTeamCombination(QFrame):
         name = cfg.get_value(f"team{self.team_number}_remark_name")
         if name is not None:
             self.remark_name.setText(name)
+
+    def retranslateUi(self):
+        self.remark_name.setPlaceholderText(self.tr("备注名"))
+        self.button.retranslateUi()
+        if self.team_number == 1:
+            self.box.check_box.setText(self.tr(self.box_text))
+        elif self.team_number <= 9:
+            text = self.box_text[:-1]
+            box_text = f"{self.tr(text)}{self.team_number}"
+            self.box.check_box.setText(box_text)
+        else:
+            text = self.box_text[:-2]
+            box_text = f"{self.tr(text)}{self.team_number}"
+            self.box.check_box.setText(box_text)
+
+
+    def retranslateTempUi(self, message_box: MessageBoxEdit):
+        message_box.retranslateUi()
+
 
 
 
@@ -258,7 +301,7 @@ class SinnerSelect(QFrame):
         self.line_edit.setText(text)
 
     def set_checkbox(self, checked):
-        self.box.set_checked( checked)
+        self.box.set_checked(checked)
 
 
 class ComboBoxSettingCard(SettingCard):
@@ -269,6 +312,7 @@ class ComboBoxSettingCard(SettingCard):
 
         self.title = title
         self.content = content
+        self.texts = texts
 
         self.comboBox = ComboBox(self)
         self.hBoxLayout.addWidget(self.comboBox, 0, Qt.AlignRight)
@@ -284,14 +328,50 @@ class ComboBoxSettingCard(SettingCard):
     def _onCurrentIndexChanged(self, index: int):
         cfg.set_value(self.config_name, self.comboBox.itemData(index))
         if self.config_name == "language_in_program":
-            lang_M = LanguageManager.instance()
-            lang_M.set_language(self.comboBox.itemData(index))
+            LanguageManager().set_language(self.comboBox.itemData(index))
 
     def retranslateUi(self):
         self.setTitle(self.tr(self.title))
         self.setContent(self.tr(self.content))
+        if self.texts:
+            index = 0
+            for key in self.texts:
+                self.comboBox.setItemText(index,self.tr(key))
+                index += 1
         
 
+class BaseSettingCardGroup(SettingCardGroup):
+    def __init__(self, title: str, parent=None):
+        super().__init__(title, parent)
+        self.text = title
+
+    def retranslateUi(self):
+        self.titleLabel.setText(self.tr(self.text))
+
+
+class BasePushSettingCard(PushSettingCard):
+    def __init__(self, text, icon: str | QIcon | FluentIconBase, title, content=None, parent=None):
+        super().__init__(text, icon, title, content, parent)
+        self.text = text
+        self.title = title
+        self.content = content
+
+    def retranslateUi(self):
+        self.titleLabel.setText(self.tr(self.title))
+        self.contentLabel.setText(self.tr(self.content))
+        self.button.setText(self.tr(self.text))
+
+class BasePrimaryPushSettingCard(PrimaryPushSettingCard):
+    def __init__(self, text, icon, title, content=None, parent=None):
+        super().__init__(text, icon, title, content, parent)
+        self.text = text
+        self.title = title
+        self.content = content
+
+    def retranslateUi(self):
+        self.titleLabel.setText(self.tr(self.title))
+        self.contentLabel.setText(self.tr(self.content))
+        self.button.setText(self.tr(self.text))
 
 
 
@@ -302,6 +382,7 @@ class PushSettingCardMirrorchyan(SettingCard):
         super().__init__(icon, title, "", parent)
 
         self.title = title
+        self.button_text = text
         self.config_name = config_name
 
         self.button2 = QPushButton("获取 CDK", self)
@@ -316,7 +397,7 @@ class PushSettingCardMirrorchyan(SettingCard):
         self.button.clicked.connect(self.__onclicked)
 
     def __onclicked(self):
-        message_box = MessageBoxEdit(self.title, self.config_value, self.window())
+        message_box = MessageBoxEdit(self.tr(self.title), self.config_value, self.window())
         if message_box.exec():
             cfg.set_value(self.config_name, message_box.getText())
             self.contentLabel.setText(message_box.getText())
@@ -331,6 +412,11 @@ class PushSettingCardMirrorchyan(SettingCard):
         while widget.parent() is not None:
             widget = widget.parent()
         return widget
+    
+    def retranslateUi(self):
+        self.button2.setText(self.tr("获取 CDK"))
+        self.titleLabel.setText(self.tr(self.title))
+        self.button.setText(self.tr(self.button_text))
 
 
 class SwitchSettingCard(SettingCard):
@@ -342,9 +428,13 @@ class SwitchSettingCard(SettingCard):
         super().__init__(icon, title, content, parent)
         self.config_name = config_name
         self.switchButton = SwitchButton(
-            self.tr('关'), self, IndicatorPosition.RIGHT)
+            self.tr('关'), self, IndicatorPosition.RIGHT
+        )
 
         self.setValue(cfg.get_value(self.config_name))
+
+        self.title = title
+        self.content = content
 
         # add switch button to layout
         self.hBoxLayout.addWidget(self.switchButton, 0, Qt.AlignRight)
@@ -360,3 +450,8 @@ class SwitchSettingCard(SettingCard):
     def setValue(self, isChecked: bool):
         self.switchButton.setChecked(isChecked)
         self.switchButton.setText(self.tr('开') if isChecked else self.tr('关'))
+
+    def retranslateUi(self):
+        self.switchButton.setText(self.tr('开') if self.switchButton.checked else self.tr('关'))
+        self.titleLabel.setText(self.tr(self.title))
+        self.contentLabel.setText(self.tr(self.content))

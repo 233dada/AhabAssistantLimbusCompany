@@ -21,7 +21,7 @@ if not pyuac.isUserAdmin():
 from win32api import GetLastError
 from win32event import CreateMutex
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication
 
 # 启用 DPI 缩放
@@ -39,13 +39,14 @@ if __name__ == "__main__":
     if not mutex or last_error > 0:
         # 使用非零退出码表示错误
         sys.exit(1)
-
+        
+    lang_manager = LanguageManager()
+    lang = lang_manager.init_language()
     app = QApplication(sys.argv)
     app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
-    lang_manager = LanguageManager.instance()
+    
     ui = MainWindow()
 
-    lang_manager.register(ui)
-    lang_manager.init_language()
-    
+    QTimer.singleShot(50, lambda: lang_manager.set_language(lang))
+
     sys.exit(app.exec_())

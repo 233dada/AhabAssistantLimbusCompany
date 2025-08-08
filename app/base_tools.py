@@ -92,10 +92,6 @@ class BaseCheckBox(BaseLayout):
         if self.config_name in ["hard_mirror","no_weekly_bonuses"]:
             self.check_box.setChecked(False)
 
-    def retranslateUi(self):
-        self.check_box.setText(self.tr(self.check_box_title))
-
-
     def set_checked(self, checked):
         self.check_box.toggled.disconnect(self.on_toggle)
         self.check_box.setChecked(checked)
@@ -139,6 +135,8 @@ class BaseCheckBox(BaseLayout):
     def send_switch_signal(self, target: dict):
         mediator.team_setting.emit(target)
 
+    def retranslateUi(self):
+        self.check_box.setText(self.tr(self.check_box_title))
 
 class BaseButton(BaseLayout):
     def __init__(self, config_name, parent=None):
@@ -154,13 +152,13 @@ class NormalTextButton(BaseButton):
         super().__init__(config_name, parent=parent)
         self.setFixedHeight(100)
 
+        self.text = button_text
         self.button = PushButton(button_text, self)
         if tactics == 1:
             self.button.setSizePolicy(
                 QSizePolicy.Expanding,  # 水平方向自动扩展
                 QSizePolicy.Fixed  # 垂直方向固定
             )
-
         self.hBoxLayout.addWidget(self.button)
         self.button.clicked.connect(self.clicked)
 
@@ -172,6 +170,9 @@ class NormalTextButton(BaseButton):
 
     def be_click(self):
         self.button.click()
+
+    def retranslateUi(self):
+        self.button.setText(self.tr(self.text))
 
 
 class ToSettingButton(BaseButton):
@@ -204,7 +205,10 @@ class ToSettingButton(BaseButton):
     def send_switch_signal(self, target: str):
         mediator.switch_team_setting.emit(target)
 
-
+    def retranslateUi(self):
+        self.edit_name.setText(self.tr("命名"))
+        self.del_action.setText(self.tr("删除"))
+        
 class ChangePageButton(BaseButton):
     def __init__(self, config_name, icon: Union[str, QIcon, FluentIconBase, None] = FIF.SETTING, parent=None):
         super().__init__(config_name, parent=parent)
@@ -251,6 +255,7 @@ class BaseLabel(BaseLayout):
         super().__init__(parent=parent)
         self.config_name = config_name
         self.label = BodyLabel(config_name)
+        self.text = config_name
         self.label.setFont(QFont('Microsoft YaHei UI', 12))
         self.hBoxLayout.addWidget(self.label, Qt.AlignLeft)
         self.hBoxLayout.setContentsMargins(5, 0, 0, 0)
@@ -261,6 +266,9 @@ class BaseLabel(BaseLayout):
         self.iconLabel.setFixedSize(20, 20)
         self.hBoxLayout.insertWidget(0, self.iconLabel)
         self.hBoxLayout.insertSpacing(1, 16)
+
+    def retranslateUi(self):
+        self.label.setText(self.tr(self.text))
 
 
 class BaseComboBox(BaseLayout):

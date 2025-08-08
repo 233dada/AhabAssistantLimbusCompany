@@ -20,7 +20,7 @@ from app.team_setting_card import TeamSettingCard
 from module.config import cfg
 from module.logger import log
 from module.update.check_update import check_update
-
+from app.language_manager import LanguageManager
 
 class Language(Enum):
     """ Language enumeration """
@@ -43,6 +43,8 @@ class MainWindow(FramelessWindow):
         #self.test_interface = TestInterface(self)
         #self.hBoxLayout.setContentsMargins(0,0,0,0)
         #self.hBoxLayout.addWidget(self.test_interface)
+        LanguageManager().register_component(self)
+        
 
         # 禁用最大化
         self.titleBar.maxBtn.setHidden(True)
@@ -69,7 +71,7 @@ class MainWindow(FramelessWindow):
                                 background: #fdfdfd;        /* 背景色（可选） */
                             }
                         """)
-
+        
         self.farming_interface = FarmingInterface(self)
         if cfg.language_in_program == "zh_cn":
             self.help_interface = MarkdownViewer("./assets/doc/zh/How_to_use.md")
@@ -112,11 +114,14 @@ class MainWindow(FramelessWindow):
 
         self.set_ring()
 
+
+
     def addSubInterface(self, widget: QLabel, objectName, text):
         widget.setObjectName(objectName)
         #widget.setAlignment(Qt.AlignCenter)
         self.stackedWidget.addWidget(widget)
         self.pivot.addItem(routeKey=objectName, text=text)
+        
 
     def add_and_switch_to_page(self, target: str):
         try:
@@ -126,16 +131,21 @@ class MainWindow(FramelessWindow):
                 self.pivot.setCurrentItem("team_setting")
             else:
                 """切换页面（带越界保护）"""
-                self.addSubInterface(TeamSettingCard(num,self), 'team_setting', '队伍设置')
+                title = self.tr("队伍设置")
+                self.addSubInterface(TeamSettingCard(num,self), 'team_setting', title)
                 list(self.pivot.items.values())[-1].click()
                 self.pivot.setCurrentItem("team_setting")
         except Exception as e:
-            print(f"【异常】switch_to_page 出错：{e}")
+            log.ERROR(f"【异常】switch_to_page 出错：{type(e).__name__}:{e}")
 
     def close_setting_page(self):
         try:
             list(self.pivot.items.values())[0].click()
             page = self.findChild(TeamSettingCard, "team_setting")
+
+            LanguageManager().unregister_component(page)
+            LanguageManager().unregister_component(page.customize_settings_module)
+
             self.stackedWidget.removeWidget(page)
             page.setParent(None)
             page.deleteLater()
@@ -217,5 +227,9 @@ class MainWindow(FramelessWindow):
             subprocess.Popen([source_file, assert_name], creationflags=subprocess.DETACHED_PROCESS)
 
     def retranslateUi(self):
-        pass
-        
+        self.pivot.setItemText("farming_interface",self.tr("一键长草"))
+        self.pivot.setItemText("help_interface",self.tr("帮助"))
+        self.pivot.setItemText("setting_interface",self.tr("设置"))
+
+        if "team_setting" in list(self.pivot.items.keys()):
+            self.pivot.setItemText("team_setting",self.tr("队伍设置"))
