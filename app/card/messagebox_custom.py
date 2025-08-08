@@ -35,7 +35,8 @@ class MessageBoxHtml(MessageBox):
         self.scrollArea.setMinimumHeight(300)
 
         # 添加新的跳转按钮
-        self.jumpButton = PrimaryPushButton(self.tr('跳转 / JUMP'), self.buttonGroup)
+
+        self.jumpButton = PrimaryPushButton('跳转', self.buttonGroup)
         self.jumpButton.adjustSize()
         self.jumpButton.setAttribute(Qt.WA_LayoutUsesWidgetRect)
         self.jumpButton.setFocus()
@@ -75,8 +76,9 @@ class MessageBoxUpdate(MessageBoxHtml):
     def __init__(self, title: str, content: str, parent=None):
         super().__init__(title, content, parent)
 
-        self.yesButton.setText('下载 / DOWNLOAD')
-        self.cancelButton.setText('好的 / OK')
+        self.yesButton.setText(self.tr('下载'))
+        self.cancelButton.setText(self.tr('好的'))
+        self.jumpButton.setText(self.tr('跳转'))
 
 
 class MessageBoxConfirm(MessageBox):
@@ -133,7 +135,7 @@ class MessageBoxWarning(MessageBox):
     def __init__(self, title: str, content: str, parent=None):
         super().__init__(title, content, parent)
 
-        self.yesButton.setText('我已了解以上信息')
+        self.yesButton.setText(self.tr('我已了解以上信息'))
         self.cancelButton.setHidden(True)
 
 class BaseInfoBar(InfoBar):

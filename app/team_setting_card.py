@@ -30,6 +30,8 @@ class TeamSettingCard(QFrame):
 
         self.connect_mediator()
         LanguageManager().register_component(self)
+        self.select_system.retranslateUi()
+        self.select_shop_strategy.retranslateUi()
 
     def __init_widget(self):
         self.main_layout = QVBoxLayout(self)
@@ -281,6 +283,8 @@ class TeamSettingCard(QFrame):
         mediator.close_setting.emit()
 
     def retranslateUi(self):
+        self.select_system.retranslateUi()
+        self.select_shop_strategy.retranslateUi()
         self.select_team.label.label.setText(self.tr("选择队伍名称"))
         self.select_system.label.label.setText(self.tr("选择队伍体系"))
         self.select_shop_strategy.label.label.setText(self.tr("选择商店策略"))

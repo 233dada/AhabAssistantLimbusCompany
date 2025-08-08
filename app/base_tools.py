@@ -308,6 +308,13 @@ class BaseComboBox(BaseLayout):
     def send_switch_signal(self, target: dict):
         mediator.team_setting.emit(target)
 
+    def retranslateUi(self):
+        if self.items:
+            index = 0
+            for key in self.items:
+                self.combo_box.setItemText(index,self.tr(key))
+                index += 1
+
 
 class BaseSpinBox(BaseLayout):
     def __init__(self, config_name, parent=None, double=False, min_value=0, min_step=1):

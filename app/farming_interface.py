@@ -274,6 +274,7 @@ class FarmingInterfaceLeft(QWidget):
         self.resonate_with_Ahab.retranslateUi()
 
         self.then.retranslateUi()
+        self.then_combobox.retranslateUi()
         self.select_all.retranslateUi()
         self.clear_all.retranslateUi()
 

@@ -72,6 +72,7 @@ class CheckBoxWithComboBox(QFrame):
                  combo_box_name,combo_box_width=None, parent=None):
         super().__init__(parent)
         #self.setFixedHeight(80)
+        self.additional_combo_box = None
         self.hBoxLayout = QHBoxLayout(self)
         self.box_text = check_box_title
         self.box = BaseCheckBox(check_box_name, check_box_icon, check_box_title, parent=self, center=False)
@@ -88,6 +89,7 @@ class CheckBoxWithComboBox(QFrame):
 
     def add_items(self, items):
         self.combo_box.add_items(items)
+        self.items = items
 
     def add_times_for_additional(self, items):
         try:
@@ -97,6 +99,9 @@ class CheckBoxWithComboBox(QFrame):
 
     def retranslateUi(self):
         self.box.check_box.setText(self.tr(self.box_text))
+        self.combo_box.retranslateUi()
+        if self.additional_combo_box:
+            self.additional_combo_box.retranslateUi()
 
 class LabelWithComboBox(QFrame):
     def __init__(self, label_text, config_name, items, vbox=True, parent=None):
@@ -104,6 +109,8 @@ class LabelWithComboBox(QFrame):
         self.setObjectName(config_name)
 
         self.text = label_text
+        self.items = items
+
 
         if vbox:
             self.layout = QVBoxLayout(self)
@@ -126,6 +133,7 @@ class LabelWithComboBox(QFrame):
 
     def retranslateUi(self):
         self.label.label.setText(self.tr(self.text))
+        self.combo_box.retranslateUi()
 
 
 class LabelWithSpinBox(QFrame):

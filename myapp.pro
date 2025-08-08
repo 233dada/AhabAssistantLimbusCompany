@@ -8,6 +8,7 @@ SOURCES = main.py \
           app/card/messagebox_custom.py \
           app/base_tools.py \
           module/update/check_update.py \
+          app/__init__.py \
 
 TRANSLATIONS = i18n/myapp_en.ts \
                i18n/myapp_zh_CN.ts

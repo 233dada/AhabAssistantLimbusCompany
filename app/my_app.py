@@ -156,8 +156,8 @@ class MainWindow(FramelessWindow):
 
     def show_save_warning(self):
         MessageBoxWarning(
-            '设置未保存',
-            '存在未保存的设置，请执行保存或取消操作',
+            self.tr('设置未保存'),
+            self.tr('存在未保存的设置，请执行保存或取消操作'),
             self
         ).exec()
 
