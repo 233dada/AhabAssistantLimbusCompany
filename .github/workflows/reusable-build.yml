@@ -80,5 +80,4 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: AALC_${{ inputs.version }}
-          path: |
-            dist_release/AALC_${{ inputs.version }}.7z
+          path: dist_release/AALC_${{ inputs.version }}.7z
