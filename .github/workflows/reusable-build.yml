@@ -30,10 +30,31 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      # 注入版本号
       - name: Inject version number
         run: |
           $filePath = "assets/config/version.txt"
           "${{ inputs.version }}" | Set-Content $filePath
+
+      # 安装 Qt 工具（包含 lrelease）
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.*'
+          target: 'desktop'  # 目标平台（桌面端）
+
+      # 生成 .qm 翻译文件
+      - name: Generate .qm translation file
+        run: |
+          mkdir dist_release
+          mkdir dist_release/AALC
+          mkdir dist_release/AALC/i18n
+          # 使用 PowerShell 批量处理所有 .ts 文件
+          Get-ChildItem -Path .\i18n\*.ts | ForEach-Object {
+              $qmPath = "dist_release\AALC\i18n\$($_.BaseName).qm"
+              lrelease $_.FullName -qm $qmPath
+              Write-Host "Generated: $qmPath"
+          }
 
 
       # 打包项目
@@ -41,8 +62,8 @@ jobs:
         run: |
           pyinstaller main.spec
           pyinstaller -F -i .\assets\logo\Updater.ico -n "AALC Updater" --exclude-module numpy --exclude-module pandas updater.py -y
-          mkdir dist_release
           mv dist/* dist_release/
+          cp dist_release/"AALC Updater"* dist_release/AALC/
           cp -r 3rdparty dist_release/AALC/
           cp -r assets dist_release/AALC/
           cp LICENSE dist_release/AALC/
