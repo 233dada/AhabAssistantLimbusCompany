@@ -60,7 +60,7 @@ jobs:
       # 打包项目
       - name: Build executable & Bundle resources
         run: |
-          pyinstaller main.spec
+          pyinstaller main.spec -y
           pyinstaller -F -i .\assets\logo\Updater.ico -n "AALC Updater" --exclude-module numpy --exclude-module pandas updater.py -y
           mv dist/* dist_release/
           cp dist_release/"AALC Updater"* dist_release/AALC/
