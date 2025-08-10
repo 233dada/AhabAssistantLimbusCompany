@@ -70,10 +70,9 @@ jobs:
           mv i18n/*.qm dist_release/AALC/i18n/
           cp LICENSE dist_release/AALC/
           cp README.md dist_release/AALC/
+          # 创建7z压缩包 (修复问题2)
           cd dist_release
-          7z a -mx=7 AALC_${{ inputs.version }}.7z AALC/*
-          cd ..
-
+          7z a -mx=7 AALC_${{ inputs.version }}.7z AALC
 
       # 上传打包结果
       - name: Upload build artifacts
