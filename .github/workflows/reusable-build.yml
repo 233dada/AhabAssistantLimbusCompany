@@ -50,7 +50,7 @@ jobs:
         run: |
           # 使用 PowerShell 批量处理所有 .ts 文件
           Get-ChildItem -Path .\i18n\*.ts | ForEach-Object {
-              $qmPath = ".\dist_i18n\i18n\$($_.BaseName).qm"
+              $qmPath = ".\i18n\$($_.BaseName).qm"
               lrelease $_.FullName -qm $qmPath
               Write-Host "Generated: $qmPath"
           }
