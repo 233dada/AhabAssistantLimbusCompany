@@ -47,17 +47,21 @@ class MainWindow(FramelessWindow):
             "sans-serif",  # 最后回退到无衬线字体
             "SansSerif",  # 无衬线字体另一个名称
         ]
+        if cfg.custom_font_name != '':
+            font_families.insert(0, cfg.custom_font_name.strip())
         qconfig.fontFamilies.value = font_families
-
-        title_bar = StandardTitleBar(self)
-        title_bar.titleLabel.setStyleSheet("""
-            QLabel{
+        font_family = ",".join([f'"{font}"' for font in font_families])
+        log.error(f"使用字体列表: {font_family}")
+        qss = f"""
+            QLabel{{
                 background: transparent;
-                font-family: "Segoe UI", "Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", sans-serif;
+                font-family: {font_family};
                 font-size: 13px;
                 padding: 0 4px
-            }
-        """)
+            }}
+        """
+        title_bar = StandardTitleBar(self)
+        title_bar.titleLabel.setStyleSheet(qss)
 
 
         # 设置标准标题栏，如果不设置则无法展示标题
