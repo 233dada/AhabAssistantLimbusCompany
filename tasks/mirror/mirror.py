@@ -442,6 +442,7 @@ class Mirror:
             if auto.find_element("mirror/claim_reward/complete_mirror_100%_assets.png") \
                     or auto.find_element("mirror/claim_reward/clear_assets.png"):
                 failed = False
+                log.debug("镜牢完成度100%，能够正常领取奖励")
             # 如果回到主界面，退出循环
             if auto.find_element("home/drive_assets.png"):
                 break
@@ -526,12 +527,12 @@ class Mirror:
                                         break
                             except:
                                 continue
-                        if self.pass_coins:
-                            msg = f"本次镜牢领取{self.pass_coins}个通行证经验"
-                            log.info(msg)
-                        else:
-                            msg = "无法识别通行证经验数量，可能是UI发生变化"
-                            log.warning(msg)
+                    if self.pass_coins:
+                        msg = f"本次镜牢领取{self.pass_coins}个通行证经验"
+                        log.info(msg)
+                    else:
+                        msg = "无法识别通行证经验数量，可能是UI发生变化"
+                        log.warning(msg)
                     if auto.click_element("mirror/claim_reward/use_enkephalin_assets.png", take_screenshot=True):
                         sleep(1)
                     continue
