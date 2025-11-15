@@ -1,7 +1,7 @@
 from ctypes import windll
 from time import sleep
 
-import pyautogui
+# import pyautogui
 import win32con
 import win32gui
 

@@ -4,7 +4,7 @@ from functools import partial
 from time import sleep, time
 from pywintypes import error as PyWinTypesError
 
-import pyautogui
+# import pyautogui
 import win32api
 import win32con
 import win32gui
@@ -36,7 +36,9 @@ key_list = {
 class Input(metaclass=SingletonMeta):
     """基于 `pyautogui` 的输入类, 仅支持前台操作"""
     # 禁用pyautogui的失败安全特性，防止意外中断
-    pyautogui.FAILSAFE = False
+
+
+    # pyautogui.FAILSAFE = False
 
     def __init__(self):
         self.is_pause = False

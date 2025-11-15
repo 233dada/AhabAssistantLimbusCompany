@@ -2,7 +2,7 @@ from ctypes import windll
 from PIL import Image
 from module.logger import log
 from module.config import cfg
-import pyautogui
+# import pyautogui
 import win32gui
 import win32ui
 import cv2

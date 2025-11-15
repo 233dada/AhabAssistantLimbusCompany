@@ -13,7 +13,6 @@ dependencies = [
     "pyside6-fluent-widgets>=1.9.1",
     "pyuac~=0.0.3",
     "pywin32",
-    "PyAutoGUI",
     "pynput",
     "pyperclip",
     "playsound3",
