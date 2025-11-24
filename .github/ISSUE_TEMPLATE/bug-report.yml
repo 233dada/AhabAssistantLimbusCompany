@@ -71,9 +71,7 @@ body:
       label: "是否使用模拟器 | Using Emulator"
       options:
         - label: 是/Yes
-          value: true
         - label: 否/No
-          value: false
     validations:
       required: true
   - type: textarea
@@ -81,3 +79,4 @@ body:
     attributes:
       label: "其他相关信息 | Additional context"
       description: 错误发生时的视频，图片与所有日志文件（越详细，越能迅速解决问题）Add any other context or screenshots about the bug report here.
+
