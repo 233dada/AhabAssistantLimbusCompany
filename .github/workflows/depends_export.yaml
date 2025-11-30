@@ -33,9 +33,10 @@ jobs:
         run: |
           uv run python ./scripts/export-requirements-from-uv-lock.py
 
-      # 提交更改并创建 PR
+      # 检查更改并生成报告
       - name: Generate changes report
         id: changes-report
+        shell: bash
         run: |
             # 检查文件是否发生变化
             if git diff --quiet requirements.txt; then
