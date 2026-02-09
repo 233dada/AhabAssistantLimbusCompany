@@ -5,7 +5,7 @@ import win32api
 import win32con
 import win32gui
 from pywintypes import error as PyWinTypesError
-
+from typing import overload
 from module.config import cfg
 from utils.singletonmeta import SingletonMeta
 
@@ -68,6 +68,22 @@ class Input(metaclass=SingletonMeta):
         self.is_pause = False
         self.restore_time = None
         # self.is_move_back = False  以后从配置里读取
+
+    @overload
+    def pos_offset(self, x: int, y: int) -> tuple[int, int]: ...
+    @overload
+    def pos_offset(self, pos: tuple[int, int]) -> tuple[int, int]: ...
+
+    def pos_offset(self, *args) -> tuple[int, int]:  # type: ignore
+        """根据当前窗口位置偏移点击位置"""
+        if len(args) == 2:
+            x, y = args
+        elif isinstance(args[0], tuple):
+            x, y = args[0]
+        else:
+            raise ValueError("pos_offset 接受两个整数参数或一个包含两个整数的元组")
+        real_x, real_y, _, _ = screen.handle.rect(True)
+        return x + real_x, y + real_y
 
     def set_pause(self) -> None:
         """
@@ -270,9 +286,9 @@ class BackgroundInput(Input, metaclass=SingletonMeta):
 
         scale = cfg.set_win_size / 1080
         self.set_focus()
-        self._mouse_move_to(x, y)
+        self.set_mouse_pos(x, y)
         self.mouse_down(x, y)
-        self._mouse_move_to(x, y + int(300 * scale * reverse), duration=0.4)
+        self.set_mouse_pos(x, y + int(300 * scale * reverse), duration=0.4)
         self.mouse_up(x, y)
 
         if move_back and current_mouse_position:
@@ -290,10 +306,10 @@ class BackgroundInput(Input, metaclass=SingletonMeta):
         """
         if move_back:
             current_mouse_position = self.get_mouse_position()
-        self._mouse_move_to(x, y)
+        self.set_mouse_pos(x, y)
         self.set_focus()
         self.mouse_down(x, y)
-        self._mouse_move_to(x + dx, y + dy, duration=drag_time)
+        self.set_mouse_pos(x + dx, y + dy, duration=drag_time)
         if drag_time * 0.3 > 0.5:
             sleep(drag_time * 0.3)
         else:
@@ -354,12 +370,12 @@ class BackgroundInput(Input, metaclass=SingletonMeta):
         if move_back:
             current_mouse_position = self.get_mouse_position()
 
-        self._mouse_move_to(position[0][0], position[0][1])
+        self.set_mouse_pos(position[0][0], position[0][1])
         self.set_focus()
         self.mouse_down(position[0][0], position[0][1])
         for pos in position:
-            self._mouse_move_to(pos[0], pos[1], duration=drag_time)
-        self.mouse_up(position[-1][-1], position[-1][-1])
+            self.set_mouse_pos(pos[0], pos[1], duration=drag_time)
+        self.mouse_up(position[-1][0], position[-1][1])
 
         if move_back and current_mouse_position:
             self.mouse_move(current_mouse_position)
@@ -369,9 +385,8 @@ class BackgroundInput(Input, metaclass=SingletonMeta):
         hwnd = screen.handle.hwnd
         if hwnd:
             # 如果最小化则显示
-            placement = win32gui.GetWindowPlacement(hwnd)
-            if placement[1] == win32con.SW_SHOWMINIMIZED:
-                win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+            if screen.handle.isMinimized:
+                screen.handle.restore()
                 sleep(0.5)
 
             # 设置窗口的输入状态
@@ -411,7 +426,7 @@ class BackgroundInput(Input, metaclass=SingletonMeta):
         win32api.SendMessage(hwnd, win32con.WM_LBUTTONUP, 0, long_positon)
         sleep(0.01)
 
-    def set_mouse_pos(self, x, y):
+    def set_mouse_pos(self, x, y, duration: float = 0):
         """移动光标位置
         Args:
             x (number): 相对于窗口左上角的 x 轴坐标

@@ -202,8 +202,10 @@ class Screen(metaclass=SingletonMeta):
             self.set_win_position = cfg.set_win_position
             if cfg.set_windows:
                 self.check_win_size(self.set_win_size)
-                self.reduce_miscontact()
-                self.adjust_win_size(self.set_win_size)
+                self.reduce_miscontact(self.set_win_position)
+                self.adjust_win_size(
+                    (int(self.set_win_size * 16 / 9), self.set_win_size)
+                )
                 self.adjust_win_position(self.set_win_position)
 
         _set_win()
@@ -222,7 +224,7 @@ class Screen(metaclass=SingletonMeta):
             except Exception as e:
                 log.error(f"设置窗口出错: {e}")
 
-    def reduce_miscontact(self) -> None:
+    def reduce_miscontact(self, pos_style: str) -> None:
         """通过调整窗口置顶减少误触"""
         # 获取适用于win32gui与win32con的窗口句柄
         hwnd = self.handle.hwnd
@@ -243,19 +245,21 @@ class Screen(metaclass=SingletonMeta):
             )
         # 获取窗口的当前样式属性值
         style = win32gui.GetWindowLong(hwnd, win32con.GWL_STYLE)
-        # 移除窗口的标题栏
-        style &= ~win32con.WS_CAPTION
         # 移除窗口的可调整大小的边框，使得窗口大小固定
         style &= ~win32con.WS_THICKFRAME
-        # 移除窗口的单行边框
-        style &= ~win32con.WS_BORDER
+        if pos_style != "free":
+            # # 移除窗口的标题栏
+            style &= ~win32con.WS_CAPTION
+            # 移除窗口的单行边框
+            style &= ~win32con.WS_BORDER
         # 位运算符 &= 结合按位取反操作符 ~
-        # 将 win32con.WS_SIZEBOX、win32con.WS_MAXIMIZEBOX 这常量对应的位设置为 0，移除窗口大小调整框、最大化按钮
+        # 将 win32con.WS_SIZEBOX、win32con.WS_MAXIMIZEBOX 这常量对应的位设置为 0，
+        # 移除窗口大小调整框、最大化按钮
         style &= ~(win32con.WS_SIZEBOX | win32con.WS_MAXIMIZEBOX)
         # 将修改后的样式值 style 应用到窗口的样式属性上
         win32gui.SetWindowLong(hwnd, win32con.GWL_STYLE, style)
 
-    def adjust_win_size(self, set_win_size: int) -> None:
+    def adjust_win_size(self, set_win_size: tuple[int, int] = (1920, 1080)) -> None:
         """调整窗口大小"""
         hwnd = self.handle.hwnd
         win32gui.SetWindowPos(
@@ -263,9 +267,9 @@ class Screen(metaclass=SingletonMeta):
             None,
             0,
             0,
-            int(set_win_size * 16 / 9),
-            set_win_size,
-            win32con.SWP_NOMOVE,
+            required_window_width,
+            required_window_height,
+            win32con.SWP_NOZORDER | win32con.SWP_NOMOVE,
         )
 
     def adjust_win_position(self, set_win_position: tuple[int, int] = (0, 0)) -> None:
