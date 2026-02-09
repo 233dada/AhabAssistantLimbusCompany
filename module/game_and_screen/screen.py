@@ -188,7 +188,6 @@ class Screen(metaclass=SingletonMeta):
 
     def set_win(self) -> None:
         """设置窗口大小与位置"""
-        return
 
         def _set_win():
             # 如果窗口最小化或不可见，先将其恢复

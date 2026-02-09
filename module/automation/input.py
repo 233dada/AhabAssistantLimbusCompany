@@ -192,6 +192,9 @@ class BackgroundInput(Input, metaclass=SingletonMeta):
     \n 除了不支持滚轮事件, 其余同 `Input` 类
     """
 
+    def get_mouse_position(self) -> tuple[int, int]:
+        return win32api.GetCursorPos()
+
     def mouse_to_blank(self, coordinate=(1, 1), move_back=True) -> None:
         """鼠标移动到空白位置，避免遮挡（然而为了避免影响用户操作，这个暂时没用）
         Args:
