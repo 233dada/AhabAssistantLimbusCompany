@@ -1,7 +1,6 @@
 import random
 from time import sleep, time
 
-import pyautogui
 import win32api
 import win32con
 import win32gui
@@ -64,7 +63,6 @@ class Input(metaclass=SingletonMeta):
     """基于 `pyautogui` 的输入类, 仅支持前台操作"""
 
     # 禁用pyautogui的失败安全特性，防止意外中断
-    pyautogui.FAILSAFE = False
 
     def __init__(self):
         self.is_pause = False
@@ -105,21 +103,7 @@ class Input(metaclass=SingletonMeta):
         Returns:
             bool (True) : 总是返回True表示操作执行完毕
         """
-        if move_back:
-            current_mouse_position = self.get_mouse_position()
-
-        msg = f"点击位置:({x},{y})"
-        log.debug(msg, stacklevel=2)
-        for i in range(times):
-            pyautogui.click(x, y)
-            # 多次点击执行很快所以暂停放到循环外
-
-        if move_back and current_mouse_position:
-            self.mouse_move(current_mouse_position)
-
-        self.wait_pause()
-
-        return True
+        raise NotImplementedError()
 
     def mouse_drag_down(self, x, y, reverse=1, move_back=True) -> None:
         """鼠标从指定位置向下拖动
@@ -130,17 +114,7 @@ class Input(metaclass=SingletonMeta):
             reverse (int): 拖动方向，1表示向下，-1表示向上
             move_back (bool): 是否在拖动后将鼠标移动回原位置
         """
-        if move_back:
-            current_mouse_position = self.get_mouse_position()
-
-        scale = cfg.set_win_size / 1080
-        pyautogui.moveTo(x, y)
-        pyautogui.mouseDown()
-        pyautogui.dragTo(x, y + int(300 * scale * reverse), duration=0.4)
-        pyautogui.mouseUp()
-
-        if move_back and current_mouse_position:
-            self.mouse_move(current_mouse_position)
+        raise NotImplementedError()
 
     def mouse_drag(self, x, y, drag_time=0.1, dx=0, dy=0, move_back=True) -> None:
         """鼠标从指定位置拖动到另一个位置
@@ -152,20 +126,7 @@ class Input(metaclass=SingletonMeta):
             dy (int): y方向拖动距离
             move_back (bool): 是否在拖动后将鼠标移动回原位置
         """
-        if move_back:
-            current_mouse_position = self.get_mouse_position()
-
-        pyautogui.moveTo(x, y)
-        pyautogui.mouseDown()
-        pyautogui.moveTo(x + dx, y + dy, duration=drag_time)
-        if drag_time * 0.3 > 0.5:
-            sleep(drag_time * 0.3)
-        else:
-            sleep(0.5)
-        pyautogui.mouseUp()
-
-        if move_back and current_mouse_position:
-            self.mouse_move(current_mouse_position)
+        raise NotImplementedError()
 
     def mouse_scroll(self, direction: int = -3) -> bool:
         """
@@ -175,13 +136,7 @@ class Input(metaclass=SingletonMeta):
         Returns:
             bool (True) : 表示是否支持该操作
         """
-        if direction <= 0:
-            msg = "鼠标滚动滚轮，远离界面"
-        else:
-            msg = "鼠标滚动滚轮，拉近界面"
-        log.debug(msg, stacklevel=2)
-        pyautogui.scroll(direction)
-        return True
+        raise NotImplementedError()
 
     def mouse_click_blank(self, coordinate=(1, 1), times=1, move_back=False) -> bool:
         """在空白位置点击鼠标
@@ -192,21 +147,7 @@ class Input(metaclass=SingletonMeta):
         Returns:
             bool (True) : 总是返回True表示操作执行完毕
         """
-        if move_back:
-            current_mouse_position = self.get_mouse_position()
-
-        msg = "点击（1，1）空白位置"
-        log.debug(msg, stacklevel=2)
-        x = coordinate[0] + random.randint(0, 10)
-        y = coordinate[1] + random.randint(0, 10)
-        for i in range(times):
-            pyautogui.click(x, y)
-
-        if move_back and current_mouse_position:
-            self.mouse_move(current_mouse_position)
-
-        self.wait_pause()
-        return True
+        raise NotImplementedError()
 
     def mouse_to_blank(self, coordinate=(1, 1), move_back=False) -> None:
         """鼠标移动到空白位置，避免遮挡
@@ -214,16 +155,7 @@ class Input(metaclass=SingletonMeta):
             coordinate (tuple): 坐标元组 (x, y)
             move_back (bool): 是否在移动后将鼠标移动回原位置
         """
-        if move_back:
-            current_mouse_position = self.get_mouse_position()
-
-        msg = "鼠标移动到空白，避免遮挡"
-        log.debug(msg, stacklevel=2)
-        pyautogui.moveTo(coordinate[0], coordinate[1])
-
-        if move_back and current_mouse_position:
-            self.mouse_move(current_mouse_position)
-        self.wait_pause()
+        raise NotImplementedError()
 
     def mouse_move(self, coordinate=(1, 1)) -> None:
         """鼠标移动到指定坐标
@@ -231,8 +163,7 @@ class Input(metaclass=SingletonMeta):
         Args:
             coordinate (tuple): 坐标元组 (x, y)
         """
-        pyautogui.moveTo(coordinate[0], coordinate[1])
-        self.wait_pause()
+        raise NotImplementedError()
 
     def get_mouse_position(self) -> tuple[int, int]:
         """获取鼠标当前位置
@@ -240,7 +171,7 @@ class Input(metaclass=SingletonMeta):
         Returns:
             tuple: 当前鼠标位置的元组 (x, y)
         """
-        return pyautogui.position()
+        raise NotImplementedError()
 
     def mouse_drag_link(self, position: list, drag_time=0.1, move_back=False) -> None:
         """鼠标从指定位置拖动到指定位置
@@ -250,20 +181,10 @@ class Input(metaclass=SingletonMeta):
             position (list): 目标位置列表
             drag_time (float): 拖动时间
         """
-        if move_back:
-            current_mouse_position = self.get_mouse_position()
-
-        pyautogui.moveTo(position[0][0], position[0][1])
-        pyautogui.mouseDown()
-        for pos in position:
-            pyautogui.moveTo(pos[0], pos[1], duration=drag_time)
-        pyautogui.mouseUp()
-
-        if move_back and current_mouse_position:
-            self.mouse_move(current_mouse_position)
+        raise NotImplementedError()
 
     def key_press(self, key):
-        return pyautogui.press(key)
+        raise NotImplementedError()
 
 
 class BackgroundInput(Input, metaclass=SingletonMeta):
@@ -567,9 +488,9 @@ class BackgroundInput(Input, metaclass=SingletonMeta):
         except PyWinTypesError as e:
             # 奇怪的权限冲突 (183:当文件已存在时，无法创建该文件。)
             # 偶尔出现不影响使用
-
             log.debug(f"鼠标移动失败: {e}")
+            sleep(0.5)
             try:
-                pyautogui.moveTo(x, y)
-            except Exception as e:
-                log.error(f"鼠标移动失败: {type(e)}: {e}")
+                win32api.SetCursorPos((x, y))
+            except PyWinTypesError as e2:
+                log.error(f"鼠标移动失败: {e2}")
