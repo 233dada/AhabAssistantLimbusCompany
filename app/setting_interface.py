@@ -35,6 +35,11 @@ class SettingInterface(ScrollArea):
 
         LanguageManager().register_component(self)
 
+        checked = self.background_mode_card.switchButton.isChecked()
+        if not checked:
+            self.background_mode_card.switchButton.setChecked(True)
+        self.background_mode_card.switchButton.setDisabled(True)
+
     def __init_widget(self):
         self.scroll_widget = QWidget()
         self.scroll_widget.setObjectName("scrollWidget")
