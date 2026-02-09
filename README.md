@@ -40,6 +40,17 @@
 
 </div>
 
+## 说在开头
+
+本仓库**粗暴且草率地**删除了`pyautogui`及依赖它的所有代码, 稳定性不及[本家](https://github.com/KIYI671/AhabAssistantLimbusCompany), 如果你是偶然从互联网上刷到或是搜索到AALC项目, 请优先使用[本家](https://github.com/KIYI671/AhabAssistantLimbusCompany)
+
+本仓库下所发布的二进制文件适用于运行[本家](https://github.com/KIYI671/AhabAssistantLimbusCompany)时出现界面大小错误以致于无法正常使用的情况 ([参考这个Issue](https://github.com/KIYI671/AhabAssistantLimbusCompany/issues/327))
+
+相较于本家**删除的功能**:
+
+- 前台模式
+  - 表现为禁用了后台模式的切换按钮
+
 ## 功能简介
 
 - **自动日常**：自动刷经验本、纽本，领取日常/周常奖励，领取邮件
