@@ -211,8 +211,8 @@ class Screen(metaclass=SingletonMeta):
         _set_win()
         while True:
             try:
-                width = self.handle.width(True)
-                height = self.handle.height(True)
+                width = self.handle.width()
+                height = self.handle.height()
                 if (
                     width != int(cfg.set_win_size * 16 / 9)
                     or height != cfg.set_win_size
@@ -262,25 +262,6 @@ class Screen(metaclass=SingletonMeta):
     def adjust_win_size(self, set_win_size: tuple[int, int] = (1920, 1080)) -> None:
         """调整窗口大小"""
         hwnd = self.handle.hwnd
-        client_width, client_height = set_win_size
-
-        # 获取当前窗口和客户区大小
-        window_rect = win32gui.GetWindowRect(hwnd)
-        client_rect = win32gui.GetClientRect(hwnd)
-
-        # 计算边框和标题栏厚度
-        window_width = window_rect[2] - window_rect[0]
-        window_height = window_rect[3] - window_rect[1]
-        current_client_width = client_rect[2]
-        current_client_height = client_rect[3]
-
-        width_diff = window_width - current_client_width
-        height_diff = window_height - current_client_height
-
-        # 计算需要的窗口大小
-        required_window_width = client_width + width_diff
-        required_window_height = client_height + height_diff
-        # 设置窗口
         win32gui.SetWindowPos(
             hwnd,
             None,
@@ -291,35 +272,10 @@ class Screen(metaclass=SingletonMeta):
             win32con.SWP_NOZORDER | win32con.SWP_NOMOVE,
         )
 
-    def adjust_win_position(self, set_win_position: str = "free") -> None:
+    def adjust_win_position(self, set_win_position: tuple[int, int] = (0, 0)) -> None:
         """调整窗口位置"""
-        if set_win_position == "free":
-            return
         hwnd = self.handle.hwnd
-        monitor_info = self.handle.monitor_info
-        is_back: bool = cfg.background_click
-        left, top, right, bottom = (
-            monitor_info["Monitor"] if is_back else monitor_info["Work"]
-        )
-        width = self.handle.width(True)
-        height = self.handle.height(True)
-        if set_win_position == "left_top":
-            pos = (left, top)
-        elif set_win_position == "right_top":
-            pos = (right - width, top)
-        elif set_win_position == "left_bottom":
-            pos = (left, bottom - height)
-        elif set_win_position == "right_bottom":
-            pos = (right - width, bottom - height)
-        elif set_win_position == "center":
-            pos = (
-                left + (right - left - width) // 2,
-                top + (bottom - top - height) // 2,
-            )
-        else:
-            log.error(f"未知的窗口位置选项: {set_win_position}")
-            return
-        win32gui.SetWindowPos(hwnd, None, *pos, 0, 0, win32con.SWP_NOSIZE)
+        win32gui.SetWindowPos(hwnd, None, 0, 0, 0, 0, win32con.SWP_NOSIZE)
 
     def check_win_size(self, set_win_size: int) -> None:
         """检查窗口大小是否合适，若不合适则切换全屏再切换回窗口模式"""

@@ -35,6 +35,11 @@ class SettingInterface(ScrollArea):
 
         LanguageManager().register_component(self)
 
+        checked = self.background_mode_card.switchButton.isChecked()
+        if not checked:
+            self.background_mode_card.switchButton.setChecked(True)
+        self.background_mode_card.switchButton.setDisabled(True)
+
     def __init_widget(self):
         self.scroll_widget = QWidget()
         self.scroll_widget.setObjectName("scrollWidget")
@@ -179,6 +184,16 @@ class SettingInterface(ScrollArea):
                 "DailySettingCard", "如果计算机处于启动状态，将在指定时间执行 AALC 任务"
             ),
             "autodaily",
+            parent=self.game_path_group,
+        )
+        self.minimize_to_tray_card = SwitchSettingCard(
+            FIF.REMOVE,
+            QT_TRANSLATE_NOOP("SwitchSettingCard", "最小化到托盘"),
+            QT_TRANSLATE_NOOP(
+                "SwitchSettingCard",
+                "开启后，最小化时将隐藏到系统托盘",
+            ),
+            "minimize_to_tray",
             parent=self.game_path_group,
         )
 
@@ -335,6 +350,7 @@ class SettingInterface(ScrollArea):
 
         self.game_path_group.addSettingCard(self.game_path_card)
         self.game_path_group.addSettingCard(self.autostart_card)
+        self.game_path_group.addSettingCard(self.minimize_to_tray_card)
         self.game_path_group.addSettingCard(self.autodaily_card)
 
         self.personal_group.addSettingCard(self.language_card)
@@ -532,6 +548,7 @@ class SettingInterface(ScrollArea):
         self.last_auto_hard_mirror_card.retranslateUi()
         self.hard_mirror_chance_card.retranslateUi()
         self.background_mode_card.retranslateUi()
+        self.minimize_to_tray_card.retranslateUi()
         self.memory_protection.retranslateUi()
         self.screenshot_benchmark_card.retranslateUi()
         self.simulator_setting_group.retranslateUi()

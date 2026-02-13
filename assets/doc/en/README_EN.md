@@ -46,6 +46,17 @@ the exciting story, performances, and mechanics inside
 
 </div>
 
+## Note at the Beginning
+
+This repository **roughly and hastily** removes `pyautogui` and all code dependent on it, making it less stable than the [original project](https://github.com/KIYI671/AhabAssistantLimbusCompany). If you come across or search for the AALC project online by chance, please prioritize using the [original project](https://github.com/KIYI671/AhabAssistantLimbusCompany).
+
+The binary files released in this repository are intended for cases where running the [original project](https://github.com/KIYI671/AhabAssistantLimbusCompany) results in incorrect interface sizing, rendering it unusable ([refer to this Issue](https://github.com/KIYI671/AhabAssistantLimbusCompany/issues/327)).
+
+**Features removed** compared to the original project:
+
+- Foreground Mode  
+  - Manifested by disabling the toggle button for background mode
+
 ## Function Introduction
 
 - **Automatic Daily**: Automatically swipe experience books, new books, receive daily/weekly rewards, and receive emails
