@@ -19,10 +19,16 @@ class Handle:
 
     _hwnd: int = 0
     _transparent = False
+    _last_title = ""
+    _last_class_name = ""
 
-    def init_handle(self, title: str = "LimbusCompany", class_name: str = "UnityWndClass") -> int:
+    def init_handle(self, title: str = "", class_name: str = "") -> int:
         """获取窗口句柄"""
-        self._hwnd = win32gui.FindWindow(class_name, title)
+        self._last_title = title or self._last_title
+        self._last_class_name = class_name or self._last_class_name
+        if self._last_title == "" or self._last_class_name == "":
+            raise ValueError("窗口标题和类名不能为空")
+        self._hwnd = win32gui.FindWindow(self._last_class_name, self._last_title)
         return self._hwnd
 
     @property
@@ -31,13 +37,13 @@ class Handle:
         if self._hwnd == 0:
             log.warning("窗口未初始化", stacklevel=3)
         elif not win32gui.IsWindow(self._hwnd):
-            log.warning("窗口句柄无效，可能窗口已关闭，重新获取", stacklevel=3)
+            log.warning(f"窗口句柄无效，可能窗口已关闭，重新获取, 当前句柄为 {self._hwnd}", stacklevel=3)
             self.init_handle()
             if win32gui.IsWindow(self._hwnd):
-                log.info("重新获取窗口句柄成功", stacklevel=3)
+                log.info(f"重新获取窗口句柄成功, 新句柄为 {self._hwnd}", stacklevel=3)
             else:
-                log.error("重新获取窗口句柄失败", stacklevel=3)
-                self._hwnd = 0
+                log.error(f"重新获取窗口句柄失败, 当前句柄为 {self._hwnd}", stacklevel=3)
+                self._hwnd = -1
         return self._hwnd
 
     @property

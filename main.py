@@ -29,6 +29,7 @@ except (AttributeError, OSError):
 from app.language_manager import LanguageManager
 from app.my_app import MainWindow
 from module.config import cfg
+from module.logger import log
 
 
 # 获取管理员权限
@@ -39,7 +40,10 @@ if not pyuac.isUserAdmin():
         pyuac.runAsAdmin(False)
         sys.exit(0)
     except Exception:
+        log.error("无法获取管理员权限，某些功能可能无法正常使用", stacklevel=2)
         sys.exit(1)
+else:
+    log.debug("以管理员身份运行中")
 
 from PySide6.QtCore import QObject, Qt, QTimer, Signal
 from PySide6.QtWidgets import QApplication
