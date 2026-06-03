@@ -19,8 +19,8 @@ class Handle:
 
     _hwnd: int = 0
     _transparent = False
-    _last_title = ""
-    _last_class_name = ""
+    _last_title = "LimbusCompany"
+    _last_class_name = "UnityWndClass"
 
     def init_handle(self, title: str = "", class_name: str = "") -> int:
         """获取窗口句柄"""
@@ -44,7 +44,20 @@ class Handle:
             else:
                 log.error(f"重新获取窗口句柄失败, 当前句柄为 {self._hwnd}", stacklevel=3)
                 self._hwnd = -1
+                try:
+                    win32gui.EnumWindows(self._enum_windows_callback, None)
+                except win32gui.error:
+                    pass
+                except Exception as e:
+                    log.error(f"枚举窗口时发生错误: {e}, {type(e)}", stacklevel=3)
         return self._hwnd
+
+    def _enum_windows_callback(self, hwnd, _):
+        log.debug(f"枚举窗口: {hwnd} - {win32gui.GetClassName(hwnd)} - {win32gui.GetWindowText(hwnd)}")
+        if win32gui.GetClassName(hwnd) == self._last_class_name and win32gui.GetWindowText(hwnd) == self._last_title:
+            log.info(f"在枚举窗口中找到匹配的窗口: {hwnd}", stacklevel=4)
+            self._hwnd = hwnd
+            return False  # 停止枚举
 
     @property
     def isTransparent(self) -> bool:
